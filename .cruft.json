@@ -1,0 +1,23 @@
+{
+  "template": "https://github.com/python-boltons/cc-python",
+  "commit": "15b51fa172bfc123ee06597c5360fa261619b8df",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "author": "Bryan M Bugyi",
+      "email": "bryanbugyi34@gmail.com",
+      "github_username": "bbugyi200",
+      "git_org_name": "python-boltons",
+      "git_repo_name": "clack",
+      "package_name": "clack",
+      "pypi_package_name": "bolton-clack",
+      "read_the_docs_domain": "bolton-clack",
+      "package_description": "command-line application configuration kit (CLACK)... A wrapper around the `argparse` library that aims to handle _all_ application configuration.",
+      "package_type": "library",
+      "_template": "https://github.com/python-boltons/cc-python",
+      "package_path": "clack",
+      "package_module": "clack"
+    }
+  },
+  "directory": null
+}
