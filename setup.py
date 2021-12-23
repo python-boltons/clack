@@ -17,7 +17,11 @@ from setuptools import find_namespace_packages, setup
 ###############################################################################
 # Configuration variables that are likely to need changing at some point.
 ###############################################################################
-DESCRIPTION = "command-line application configuration kit (CLACK)... A wrapper around the `argparse` library that aims to handle _all_ application configuration."
+DESCRIPTION = (
+    "command-line application configuration kit (CLACK)... A wrapper around"
+    " the `argparse` library that aims to handle _all_ application"
+    " configuration."
+)
 SUPPORTED_PYTHON_VERSIONS = [
     (3, 8),
     (3, 9),

@@ -1,4 +1,8 @@
-"""command-line application configuration kit (CLACK)... A wrapper around the `argparse` library that aims to handle _all_ application configuration."""
+"""clack package
+
+command-line application configuration kit (CLACK)... A wrapper around the
+`argparse` library that aims to handle _all_ application configuration.
+"""
 
 import logging as _logging
 
