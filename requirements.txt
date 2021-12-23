@@ -10,6 +10,8 @@ bolton-metaman==0.1.1
     # via
     #   -r requirements.in
     #   bolton-logrus
+bolton-typist==0.1.1
+    # via -r requirements.in
 pydantic==1.8.2
     # via -r requirements.in
 structlog==21.5.0
