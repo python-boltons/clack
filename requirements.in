@@ -1,1 +1,4 @@
-
+bolton-logrus ~= 0.1.0
+bolton-metaman ~= 0.1.1
+bolton-typist ~= 0.1.1
+pydantic ~= 1.8

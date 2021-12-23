@@ -1,15 +1,29 @@
-"""clack package
+"""(C)ommand (L)ine (A)pplication (C)onfig (K)it
 
-command-line application configuration kit (CLACK)... A wrapper around the
-`argparse` library that aims to handle _all_ application configuration.
+A wrapper around the `argparse` library that aims to handle _all_ application
+configuration.
 """
 
 import logging as _logging
 
-from ._core import dummy
+from ._core import (
+    Config,
+    MainType,
+    NewCommand,
+    Parser,
+    main_factory,
+    new_command_factory,
+)
 
 
-__all__ = ["dummy"]
+__all__ = [
+    "Config",
+    "MainType",
+    "NewCommand",
+    "Parser",
+    "main_factory",
+    "new_command_factory",
+]
 
 __author__ = "Bryan M Bugyi"
 __email__ = "bryanbugyi34@gmail.com"
