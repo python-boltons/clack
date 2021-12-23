@@ -4,3 +4,15 @@
 #
 #    "make update-requirements"
 #
+bolton-logrus==0.1.0
+    # via -r requirements.in
+bolton-metaman==0.1.1
+    # via
+    #   -r requirements.in
+    #   bolton-logrus
+pydantic==1.8.2
+    # via -r requirements.in
+structlog==21.5.0
+    # via bolton-logrus
+typing-extensions==4.0.1
+    # via pydantic
