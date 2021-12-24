@@ -7,6 +7,7 @@ configuration.
 import logging as _logging
 
 from ._core import (
+    AbstractConfig,
     Config,
     MainType,
     NewCommand,
@@ -17,6 +18,7 @@ from ._core import (
 
 
 __all__ = [
+    "AbstractConfig",
     "Config",
     "MainType",
     "NewCommand",

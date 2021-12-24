@@ -23,6 +23,7 @@ from typing import (
     Protocol,
     Sequence,
     Type,
+    TypeVar,
     cast,
     runtime_checkable,
 )
@@ -40,6 +41,9 @@ from pydantic import BaseSettings
 from typist import literal_to_list
 
 
+ConfigType = TypeVar("ConfigType", bound="AbstractConfig", covariant=True)
+
+
 class MainType(Protocol):
     """Type of the `main()` function returned by `main_factory()`."""
 
@@ -48,7 +52,7 @@ class MainType(Protocol):
 
 
 @runtime_checkable
-class ConfigType(Protocol):
+class AbstractConfig(Protocol[ConfigType]):
     """Application Configuration Protocol
 
     In other words, his class describes what an application Config object
@@ -56,7 +60,9 @@ class ConfigType(Protocol):
     """
 
     @classmethod
-    def from_cli_args(cls, argv: Sequence[str]) -> "ConfigType":
+    def from_cli_args(
+        cls: Type[ConfigType], argv: Sequence[str]
+    ) -> ConfigType:
         """Constructs a new Config object from command-line arguments."""
 
 
