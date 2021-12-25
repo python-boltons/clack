@@ -19,7 +19,7 @@ _version badges:_
 
 ## Installation 🗹
 
-To install `bolton-clack` using [pip][9], run the following
+To install `clack` using [pip][9], run the following
 commands in your terminal:
 
 ``` shell
