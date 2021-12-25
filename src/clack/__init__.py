@@ -6,6 +6,7 @@ configuration.
 
 import logging as _logging
 
+from . import xdg
 from ._core import (
     AbstractConfig,
     Config,

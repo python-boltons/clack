@@ -9,9 +9,16 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.1.1...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.1.2...HEAD)
 
 No notable changes have been made.
+
+
+## [0.1.2](https://github.com/python-boltons/clack/compare/0.1.1...0.1.2) - 2021-12-25
+
+### Added
+
+* Add new `clack.xdg` module.
 
 
 ## [0.1.1](https://github.com/python-boltons/clack/compare/0.1.0...0.1.1) - 2021-12-24
