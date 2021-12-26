@@ -9,9 +9,16 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.1.2...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.1.3...HEAD)
 
 No notable changes have been made.
+
+
+## [0.1.3](https://github.com/python-boltons/clack/compare/0.1.2...0.1.3) - 2021-12-26
+
+### Added
+
+* Add `comma_list_or_file` class.
 
 
 ## [0.1.2](https://github.com/python-boltons/clack/compare/0.1.1...0.1.2) - 2021-12-25

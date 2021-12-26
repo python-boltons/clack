@@ -13,6 +13,7 @@ from ._core import (
     MainType,
     NewCommand,
     Parser,
+    comma_list_or_file,
     main_factory,
     new_command_factory,
 )
@@ -24,6 +25,7 @@ __all__ = [
     "MainType",
     "NewCommand",
     "Parser",
+    "comma_list_or_file",
     "main_factory",
     "new_command_factory",
     "xdg",
