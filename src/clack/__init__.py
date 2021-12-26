@@ -26,6 +26,7 @@ __all__ = [
     "Parser",
     "main_factory",
     "new_command_factory",
+    "xdg",
 ]
 
 __author__ = "Bryan M Bugyi"
