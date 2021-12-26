@@ -29,5 +29,5 @@ class AbstractConfig(Protocol[ConfigType]):
 class Config(BaseSettings, allow_mutation=False):
     """Default CLI arguments / app configuration."""
 
-    logs: List[Log]
-    verbose: int
+    logs: List[Log] = []
+    verbose: int = 0
