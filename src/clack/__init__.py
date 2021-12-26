@@ -7,16 +7,10 @@ configuration.
 import logging as _logging
 
 from . import xdg
-from ._core import (
-    AbstractConfig,
-    Config,
-    MainType,
-    NewCommand,
-    Parser,
-    comma_list_or_file,
-    main_factory,
-    new_command_factory,
-)
+from ._config import AbstractConfig, Config
+from ._helpers import NewCommand, comma_list_or_file, new_command_factory
+from ._main import MainType, main_factory
+from ._parser import Parser
 
 
 __all__ = [
