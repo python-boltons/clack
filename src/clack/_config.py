@@ -26,7 +26,7 @@ class AbstractConfig(Protocol[ConfigType]):
         """Constructs a new Config object from command-line arguments."""
 
 
-class Config(BaseSettings, allow_mutation=False):
+class Config(BaseSettings, allow_mutation=False, env_file=".env"):
     """Default CLI arguments / app configuration."""
 
     logs: List[Log] = []
