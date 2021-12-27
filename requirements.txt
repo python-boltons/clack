@@ -12,8 +12,10 @@ bolton-metaman==0.1.1
     #   bolton-logrus
 bolton-typist==0.1.1
     # via -r requirements.in
-pydantic==1.8.2
+pydantic[dotenv]==1.8.2
     # via -r requirements.in
+python-dotenv==0.19.2
+    # via pydantic
 structlog==21.5.0
     # via bolton-logrus
 typing-extensions==4.0.1
