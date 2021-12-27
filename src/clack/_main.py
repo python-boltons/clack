@@ -25,7 +25,7 @@ def main_factory(
 
     Args:
         run: A function that acts as the real entry point for a program.
-        config: A pydantic.BaseSettings type that represents our applications
+        config: A pydantic.BaseSettings type that represents our application's
           config.
 
     Returns:
