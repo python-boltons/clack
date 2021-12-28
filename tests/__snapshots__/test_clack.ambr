@@ -163,8 +163,8 @@
   
   
   ----- STDERR -----
-  2021-09-06T15:45:03.585481Z [trace    ] TRACE level logging enabled.   [clack] cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
-  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [trace    ] TRACE level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [debug    ] Can anyone hear me???          [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [info     ] Are we going to do stuff?      [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [warning  ] What stuff?!?!?!               [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
@@ -179,8 +179,8 @@
   
   
   ----- STDERR -----
-  2021-09-06T15:45:03.585481Z [trace    ] TRACE level logging enabled.   [clack] cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
-  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [trace    ] TRACE level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [trace    ] This is a TRACE level message. [test] function=fake_function lineno=123 log_level=TRACE module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [debug    ] Can anyone hear me???          [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [info     ] Are we going to do stuff?      [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
@@ -192,8 +192,8 @@
 # name: test_log[super verbose to stdout-logging]
   '
   ----- STDOUT -----
-  2021-09-06T15:45:03.585481Z [trace    ] TRACE level logging enabled.   [clack] cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
-  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [trace    ] TRACE level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   Starting CLI test...
   2021-09-06T15:45:03.585481Z [debug    ] Can anyone hear me???          [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [info     ] Are we going to do stuff?      [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
@@ -208,8 +208,8 @@
 # name: test_log[super verbose to stdout-structlog]
   '
   ----- STDOUT -----
-  2021-09-06T15:45:03.585481Z [trace    ] TRACE level logging enabled.   [clack] cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
-  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [trace    ] TRACE level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=3, do_stuff=False) fargs={'argv': ['', '-vvv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   Starting CLI test...
   2021-09-06T15:45:03.585481Z [trace    ] This is a TRACE level message. [test] function=fake_function lineno=123 log_level=TRACE module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [debug    ] Can anyone hear me???          [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
@@ -229,7 +229,7 @@
   
   
   ----- STDERR -----
-  15:45:03.585481 [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=1, do_stuff=False) pid=12345 thread=MainThread
+  15:45:03.585481 [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=1, do_stuff=False) pid=12345 thread=MainThread
   15:45:03.585481 [debug    ] Can anyone hear me???          [test] pid=12345 thread=MainThread
   15:45:03.585481 [info     ] Are we going to do stuff?      [test] pid=12345 thread=MainThread
   15:45:03.585481 [warning  ] What stuff?!?!?!               [test] pid=12345 thread=MainThread
@@ -244,7 +244,7 @@
   
   
   ----- STDERR -----
-  15:45:03.585481 [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=1, do_stuff=False) pid=12345 thread=MainThread
+  15:45:03.585481 [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=1, do_stuff=False) pid=12345 thread=MainThread
   15:45:03.585481 [debug    ] Can anyone hear me???          [test] pid=12345 thread=MainThread
   15:45:03.585481 [info     ] Are we going to do stuff?      [test] pid=12345 thread=MainThread
   15:45:03.585481 [warning  ] What stuff?!?!?!               [test] pid=12345 thread=MainThread
@@ -255,7 +255,7 @@
 # name: test_log[verbose to stdout-logging]
   '
   ----- STDOUT -----
-  15:45:03.585481 [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=1, do_stuff=False) pid=12345 thread=MainThread
+  15:45:03.585481 [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=1, do_stuff=False) pid=12345 thread=MainThread
   Starting CLI test...
   15:45:03.585481 [debug    ] Can anyone hear me???          [test] pid=12345 thread=MainThread
   15:45:03.585481 [info     ] Are we going to do stuff?      [test] pid=12345 thread=MainThread
@@ -270,7 +270,7 @@
 # name: test_log[verbose to stdout-structlog]
   '
   ----- STDOUT -----
-  15:45:03.585481 [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=1, do_stuff=False) pid=12345 thread=MainThread
+  15:45:03.585481 [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=1, do_stuff=False) pid=12345 thread=MainThread
   Starting CLI test...
   15:45:03.585481 [debug    ] Can anyone hear me???          [test] pid=12345 thread=MainThread
   15:45:03.585481 [info     ] Are we going to do stuff?      [test] pid=12345 thread=MainThread
@@ -289,7 +289,7 @@
   
   
   ----- STDERR -----
-  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=2, do_stuff=False) fargs={'argv': ['', '-vv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=2, do_stuff=False) fargs={'argv': ['', '-vv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [debug    ] Can anyone hear me???          [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [info     ] Are we going to do stuff?      [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [warning  ] What stuff?!?!?!               [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
@@ -304,7 +304,7 @@
   
   
   ----- STDERR -----
-  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=2, do_stuff=False) fargs={'argv': ['', '-vv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stderr', format='nocolor', level=None)], verbose=2, do_stuff=False) fargs={'argv': ['', '-vv', '--log', 'stderr@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [debug    ] Can anyone hear me???          [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [info     ] Are we going to do stuff?      [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [warning  ] What stuff?!?!?!               [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
@@ -315,7 +315,7 @@
 # name: test_log[very verbose to stdout-logging]
   '
   ----- STDOUT -----
-  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=2, do_stuff=False) fargs={'argv': ['', '-vv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=2, do_stuff=False) fargs={'argv': ['', '-vv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   Starting CLI test...
   2021-09-06T15:45:03.585481Z [debug    ] Can anyone hear me???          [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [info     ] Are we going to do stuff?      [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
@@ -330,7 +330,7 @@
 # name: test_log[very verbose to stdout-structlog]
   '
   ----- STDOUT -----
-  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=2, do_stuff=False) fargs={'argv': ['', '-vv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
+  2021-09-06T15:45:03.585481Z [debug    ] DEBUG level logging enabled.   [clack] app_name=test_clack cfg=Config(logs=[Log(file='stdout', format='nocolor', level=None)], verbose=2, do_stuff=False) fargs={'argv': ['', '-vv', '--log', 'stdout@nocolor']} function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   Starting CLI test...
   2021-09-06T15:45:03.585481Z [debug    ] Can anyone hear me???          [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread
   2021-09-06T15:45:03.585481Z [info     ] Are we going to do stuff?      [test] function=fake_function lineno=123 module=fake_module pid=12345 thread=MainThread

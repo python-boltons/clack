@@ -4,8 +4,6 @@ import os
 from pathlib import Path
 from typing import Dict, Literal, Tuple
 
-from metaman import scriptname
-
 
 XDG_Type = Literal["cache", "config", "data", "runtime"]
 
@@ -19,7 +17,7 @@ _XDG_TYPE_MAP: Dict[XDG_Type, Tuple[str, str]] = {
 }
 
 
-def init_full_dir(xdg_type: XDG_Type, *, up: int = 0) -> Path:
+def init_full_dir(xdg_type: XDG_Type, app_name: str) -> Path:
     """
     Returns:
         Full XDG user directory (including scriptname).
@@ -27,18 +25,18 @@ def init_full_dir(xdg_type: XDG_Type, *, up: int = 0) -> Path:
     Side Effects:
         Ensures the full XDG user directory exists before returning it.
     """
-    full_xdg_dir = get_full_dir(xdg_type, up=up + 1)
+    full_xdg_dir = get_full_dir(xdg_type, app_name)
     full_xdg_dir.mkdir(parents=True, exist_ok=True)
     return full_xdg_dir
 
 
-def get_full_dir(xdg_type: XDG_Type, *, up: int = 0) -> Path:
+def get_full_dir(xdg_type: XDG_Type, app_name: str) -> Path:
     """
     Returns:
         Full XDG user directory (including scriptname).
     """
     base_xdg_dir = get_base_dir(xdg_type)
-    full_xdg_dir = base_xdg_dir / scriptname(up=up + 1)
+    full_xdg_dir = base_xdg_dir / app_name
     return full_xdg_dir
 
 

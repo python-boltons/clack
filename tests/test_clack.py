@@ -144,7 +144,7 @@ def test_log(
     del mock_dynamic_log_fields
 
     run = run_factory(logger_type)
-    main = clack.main_factory(run, Config)
+    main = clack.main_factory("test_clack", run, Config)
     exit_code = main([""] + args)
     assert exit_code == 0
 
@@ -162,7 +162,7 @@ def test_help(mocker: MockerFixture) -> None:
     mocker.patch("sys.exit")
 
     run = run_factory("structlog")
-    main = clack.main_factory(run, Config)
+    main = clack.main_factory("test_clack", run, Config)
     exit_code = main(["", "--help"])
     assert exit_code == 0
 

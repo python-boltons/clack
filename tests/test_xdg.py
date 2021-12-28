@@ -44,7 +44,7 @@ def setup_envvars() -> Iterator[None]:
 @params("key,expected", XDG_PARAMS)
 def test_xdg_init(key: xdg.XDG_Type, expected: Path) -> None:
     """Test the xdg.init_full_dir() function."""
-    full_dir = xdg.init_full_dir(key)
+    full_dir = xdg.init_full_dir(key, "test_xdg")
     actual = full_dir.parent
 
     assert expected == actual
