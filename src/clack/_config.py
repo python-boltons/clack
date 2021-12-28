@@ -9,10 +9,10 @@ from typing import (
     List,
     Protocol,
     Sequence,
+    Tuple,
     Type,
     TypeVar,
     runtime_checkable,
-    Tuple,
 )
 
 from logrus import Log
