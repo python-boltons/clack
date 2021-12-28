@@ -12,16 +12,14 @@ import sys
 from typing import Any, Callable, Iterable, List, Optional, cast
 
 from logrus import Log, LogFormat, LogLevel, get_default_logfile
-from metaman import scriptname
 from typist import literal_to_list
 
+from ._dynvars import get_app_name
 
-def Parser(
-    *args: Any, name: str = None, **kwargs: Any
-) -> argparse.ArgumentParser:
+
+def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     """Wrapper for argparse.ArgumentParser."""
-    if name is None:
-        name = scriptname(up=1)
+    app_name = get_app_name()
 
     stack = list(inspect.stack())
     stack.pop(0)
@@ -49,7 +47,7 @@ def Parser(
         nargs="?",
         const="+",
         default=[],
-        type=_log_type_factory(name),
+        type=_log_type_factory(app_name),
         help=(
             "This option can be used to enable a new logging handler. FILE"
             " should be either a path to a logfile or one of the following"
@@ -116,7 +114,7 @@ def Parser(
     return parser
 
 
-def _log_type_factory(name: str) -> Callable[[str], Log]:
+def _log_type_factory(app_name: str) -> Callable[[str], Log]:
     def log_type(arg: str) -> Log:
         # This regex will match arguments of the form 'FILE[:LEVEL][@FORMAT]'.
         pttrn = (
@@ -135,7 +133,7 @@ def _log_type_factory(name: str) -> Callable[[str], Log]:
             # Then we use a default logfile location.
             logfile_stem = file[1:]
             if not logfile_stem:
-                logfile_stem = name
+                logfile_stem = app_name
             file = str(get_default_logfile(logfile_stem))
 
         # If `--log null` is specified on the command-line...
