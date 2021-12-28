@@ -18,6 +18,8 @@ class MainType(Protocol):
         """This method captures the `main()` function's signature."""
 
 
+# TODO(bugyi): Accept a 'name' argument and then use a context manager to set the 'CLACK_PROJECT_NAME' envvar, which will be used by _config_file_settings() and clack.Parser().
+# TODO(bugyi): Read https://github.com/samuelcolvin/pydantic/issues/2106
 def main_factory(
     run: Callable[[ConfigType], int], config: Type[ConfigType]
 ) -> MainType:
