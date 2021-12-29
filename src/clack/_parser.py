@@ -17,6 +17,9 @@ from typist import literal_to_list
 from ._dynvars import get_app_name
 
 
+_ARGPARSE_ARGUMENT_DEFAULT = object()
+
+
 def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     """Wrapper for argparse.ArgumentParser."""
     app_name = get_app_name()
@@ -38,6 +41,8 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     valid_log_formats = sorted(cast(List[str], literal_to_list(LogFormat)))
 
     parser = argparse.ArgumentParser(*args, **kwargs)
+    _patch_parser(parser)
+
     parser.add_argument(
         "-L",
         "--log",
@@ -46,7 +51,6 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
         action="append",
         nargs="?",
         const="+",
-        default=[],
         type=_log_type_factory(app_name),
         help=(
             "This option can be used to enable a new logging handler. FILE"
@@ -66,7 +70,6 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
         "-v",
         "--verbose",
         action="count",
-        default=0,
         help=(
             "How verbose should the output be? This option can be specified"
             " multiple times (e.g. -v, -vv, -vvv, ...)."
@@ -112,6 +115,46 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
             pass
 
     return parser
+
+
+def args_to_kwargs(args: argparse.Namespace) -> dict[str, Any]:
+    """Converts an argparse.Namespace object into a dictionary.
+
+    Used to filter out argparse arguments which were NOT specified on the
+    command-line.
+    """
+    kwargs = vars(args)
+    result = {}
+    for key, value in kwargs.items():
+        if value is not _ARGPARSE_ARGUMENT_DEFAULT:
+            result[key] = value
+    return result
+
+
+def _patch_parser(parser: argparse.ArgumentParser) -> None:
+    _patch_add_argument_method(parser)
+
+
+def _patch_add_argument_method(parser: argparse.ArgumentParser) -> None:
+    def add_argument(*args: Any, **kwargs: Any) -> None:
+        if (
+            "default" in kwargs
+            and kwargs["default"] is not _ARGPARSE_ARGUMENT_DEFAULT
+        ):
+            default = kwargs["default"]
+            raise RuntimeError(
+                "Default config values should be set on the Config class"
+                " itself, instead of using the ArgumentParser.add_argument()"
+                " method's 'default'"
+                f" kwarg.\n\n{default=}\n\n{args=}\n\n{kwargs=}"
+            )
+
+        if "default" not in kwargs:
+            kwargs["default"] = _ARGPARSE_ARGUMENT_DEFAULT
+
+        argparse.ArgumentParser.add_argument(parser, *args, **kwargs)
+
+    parser.add_argument = add_argument  # type: ignore[assignment]
 
 
 def _log_type_factory(app_name: str) -> Callable[[str], Log]:

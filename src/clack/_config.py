@@ -90,7 +90,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         full_xdg_dir = xdg.get_full_dir("config", app_name)
         for basename in all_basenames:
             fullname = full_xdg_dir / basename
-            all_config_files.append(Path(fullname))
+            all_config_files.append(fullname)
 
         for basename in all_basenames:
             all_config_files.append(Path(basename))
@@ -98,7 +98,9 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         result = {}
         for config_file in all_config_files:
             if config_file.is_file():
-                yaml_dict = yaml.load(config_file.read_bytes(), yaml.SafeLoader)
+                yaml_dict = yaml.load(
+                    config_file.read_bytes(), yaml.SafeLoader
+                )
                 result.update(yaml_dict)
 
         return result

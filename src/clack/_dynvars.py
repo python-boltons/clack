@@ -18,9 +18,7 @@ def clack_envvars_set(app_name: str) -> Iterator[None]:
         - CLACK_APP_NAME
     """
     os.environ["CLACK_APP_NAME"] = app_name
-
     yield
-
     del os.environ["CLACK_APP_NAME"]
 
 
