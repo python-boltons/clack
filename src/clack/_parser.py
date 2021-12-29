@@ -9,12 +9,21 @@ import os
 from pathlib import Path
 import re
 import sys
-from typing import Any, Callable, Iterable, List, Optional, cast
+from typing import (
+    Any,
+    Callable,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    cast,
+)
 
 from logrus import Log, LogFormat, LogLevel, get_default_logfile
 from typist import literal_to_list
 
-from ._dynvars import get_app_name
+from ._dynvars import get_app_name, get_config_defaults
 
 
 _ARGPARSE_ARGUMENT_DEFAULT = object()
@@ -123,11 +132,18 @@ def args_to_kwargs(args: argparse.Namespace) -> dict[str, Any]:
     Used to filter out argparse arguments which were NOT specified on the
     command-line.
     """
+    config_defaults = get_config_defaults()
+
     kwargs = vars(args)
     result = {}
     for key, value in kwargs.items():
-        if value is not _ARGPARSE_ARGUMENT_DEFAULT:
-            result[key] = value
+        if key in config_defaults and config_defaults[key] == value:
+            continue
+
+        if value is _ARGPARSE_ARGUMENT_DEFAULT:
+            continue
+
+        result[key] = value
     return result
 
 
@@ -137,24 +153,37 @@ def _patch_parser(parser: argparse.ArgumentParser) -> None:
 
 def _patch_add_argument_method(parser: argparse.ArgumentParser) -> None:
     def add_argument(*args: Any, **kwargs: Any) -> None:
-        if (
-            "default" in kwargs
-            and kwargs["default"] is not _ARGPARSE_ARGUMENT_DEFAULT
-        ):
-            default = kwargs["default"]
-            raise RuntimeError(
-                "Default config values should be set on the Config class"
-                " itself, instead of using the ArgumentParser.add_argument()"
-                " method's 'default'"
-                f" kwarg.\n\n{default=}\n\n{args=}\n\n{kwargs=}"
-            )
-
         if "default" not in kwargs:
-            kwargs["default"] = _ARGPARSE_ARGUMENT_DEFAULT
+            field_name = _get_field_name(args, kwargs)
+            default = _get_add_argument_default(field_name)
+            kwargs["default"] = default
 
         argparse.ArgumentParser.add_argument(parser, *args, **kwargs)
 
     parser.add_argument = add_argument  # type: ignore[assignment]
+
+
+def _get_field_name(args: Sequence[str], kwargs: Mapping[str, Any]) -> str:
+    if dest := kwargs.get("dest", None):
+        assert isinstance(dest, str)
+        return dest
+
+    if not args[0].startswith("-"):
+        return args[0]
+
+    long_opt = args[0]
+    if not long_opt.startswith("--"):
+        long_opt = args[1]
+
+    return long_opt.lstrip("-").replace("-", "_")
+
+
+def _get_add_argument_default(field_name: str) -> Any:
+    config_defaults = get_config_defaults()
+    if field_name in config_defaults:
+        return config_defaults[field_name]
+
+    return _ARGPARSE_ARGUMENT_DEFAULT
 
 
 def _log_type_factory(app_name: str) -> Callable[[str], Log]:

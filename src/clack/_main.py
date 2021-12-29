@@ -20,15 +20,17 @@ class MainType(Protocol):
 
 
 def main_factory(
-    app_name: str, run: Callable[[ConfigType], int], config: Type[ConfigType]
+    app_name: str,
+    run: Callable[[ConfigType], int],
+    config_type: Type[ConfigType],
 ) -> MainType:
     """Factory used to create a new `main()` function.
 
     Args:
         app_name: The name of the currently running application.
         run: A function that acts as the real entry point for a program.
-        config: A pydantic.BaseSettings type that represents our application's
-          config.
+        config_type: A pydantic.BaseSettings type that represents our
+          application's config.
 
     Returns:
         A generic main() function to be used as a script's entry point.
@@ -38,8 +40,8 @@ def main_factory(
         if argv is None:  # pragma: no cover
             argv = sys.argv
 
-        with clack_envvars_set(app_name):
-            cfg = config.from_cli_args(argv)
+        with clack_envvars_set(app_name, config_type):
+            cfg = config_type.from_cli_args(argv)
 
         verbose: int = getattr(cfg, "verbose", 0)
         logs: List[Log] = getattr(cfg, "logs", [])

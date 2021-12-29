@@ -18,10 +18,10 @@ from typing import (
 
 from logrus import Log
 from pydantic import BaseSettings
+from pydantic.fields import ModelField
 import yaml
 
 from . import xdg
-from ._dynvars import get_app_name
 
 
 ConfigType = TypeVar("ConfigType", bound="AbstractConfig", covariant=True)
@@ -36,6 +36,8 @@ class AbstractConfig(Protocol[ConfigType]):
     In other words, his class describes what an application Config object
     should look like.
     """
+
+    __fields__: Dict[str, ModelField]
 
     @classmethod
     def from_cli_args(
@@ -65,7 +67,11 @@ class Config(BaseSettings):
             file_secret_settings: _SettingsSource,
         ) -> Tuple[_SettingsSource, ...]:
             """Customize where we load our application config from."""
+            # HACK: Use nested import to prevent circular import errors.
+            from ._dynvars import get_app_name
+
             del file_secret_settings
+
             app_name = get_app_name()
             return (
                 init_settings,
