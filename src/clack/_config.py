@@ -56,8 +56,6 @@ class Config(BaseSettings):
         """Pydantic BaseSettings Configuration."""
 
         allow_mutation = False
-        env_file = ".env"
-        env_file_encoding = "utf-8"
 
         @classmethod
         def customise_sources(
