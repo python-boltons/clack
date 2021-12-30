@@ -180,10 +180,7 @@ def _get_field_name(args: Sequence[str], kwargs: Mapping[str, Any]) -> str:
 
 def _get_add_argument_default(field_name: str) -> Any:
     config_defaults = get_config_defaults()
-    if field_name in config_defaults:
-        return config_defaults[field_name]
-
-    return _ARGPARSE_ARGUMENT_DEFAULT
+    return config_defaults.get(field_name, _ARGPARSE_ARGUMENT_DEFAULT)
 
 
 def _log_type_factory(app_name: str) -> Callable[[str], Log]:

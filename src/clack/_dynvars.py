@@ -66,7 +66,7 @@ def get_config_defaults() -> dict[str, Any]:
     """Getter function for CLACK_CONFIG_DEFAULTS envvar.
 
     Raises:
-        A RuntimeError if the CLACK_APP_NAME envvar is not defined.
+        A RuntimeError if the CLACK_CONFIG_DEFAULTS envvar is not defined.
     """
     try:
         config_defaults_string = os.environ["CLACK_CONFIG_DEFAULTS"]
