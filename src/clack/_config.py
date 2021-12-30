@@ -33,7 +33,7 @@ _SettingsSource = Callable[[BaseSettings], Dict[str, Any]]
 class AbstractConfig(Protocol[ConfigType]):
     """Application Configuration Protocol
 
-    In other words, his class describes what an application Config object
+    In other words, this class describes what an application Config object
     should look like.
     """
 
