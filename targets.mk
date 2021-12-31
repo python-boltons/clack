@@ -28,7 +28,7 @@ define runtests
 		-vv \
 		--cov=src/clack \
 		--cov-config=setup.cfg \
-		--cov-fail-under=65 \
+		--cov-fail-under=75 \
 		--cov-report=xml:coverage.xml \
 		--cov-report=term-missing \
 		--cov-branch \

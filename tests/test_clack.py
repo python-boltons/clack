@@ -3,13 +3,15 @@
 import pytest
 
 import clack
+from clack._dynvars import clack_envvars_set
 
 from .shared import Config
 
 
 def test_new_command_factory() -> None:
     """Test the clack.new_command_factory() function."""
-    parser = clack.Parser()
+    with clack_envvars_set("test_clack", Config):
+        parser = clack.Parser()
 
     new_command = clack.new_command_factory(parser, dest="command")
 
