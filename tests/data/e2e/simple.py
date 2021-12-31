@@ -21,6 +21,22 @@ import clack
 #
 ### END TEST CASE
 
+### TEST CASE 3
+#
+# ARGS:     --baz
+# ENV:      BAR=4
+# OUTPUT:   foo=FOO bar=4 baz=True
+#
+### END TEST CASE
+
+### TEST CASE 4
+#
+# ARGS:     -B1 --baz
+# ENV:      BAR=4 FOO=foofoo
+# OUTPUT:   foo=foofoo bar=1 baz=True
+#
+### END TEST CASE
+
 
 class Config(clack.Config):
     """Application Config."""

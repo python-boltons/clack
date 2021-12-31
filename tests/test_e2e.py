@@ -17,6 +17,7 @@ from .e2e_helpers import (
     START_MARK_PREFIX,
     Case,
     case_comments_from_lines,
+    envvars_set,
 )
 
 
@@ -40,11 +41,12 @@ def test_end_to_end(capsys: CaptureFixture) -> None:
             log.info("New test case.", case=case)
 
             main: MainType = getattr(mod, "main")
-            ec = main([""] + case.cli_args)
+            with envvars_set(case.env):
+                ec = main([""] + case.cli_args)
+
             assert ec == 0
 
             capture = capsys.readouterr()
-
             assert capture.out.strip() == case.output
 
 
@@ -54,7 +56,7 @@ def test_end_to_end(capsys: CaptureFixture) -> None:
         (
             "1",
             ["# ARGS: --foo=FOO --bar 2", "# OUTPUT: foobar"],
-            Case("1", ["--foo=FOO", "--bar", "2"], "foobar"),
+            Case("1", ["--foo=FOO", "--bar", "2"], "foobar", None),
         )
     ],
 )

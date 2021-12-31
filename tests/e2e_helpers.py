@@ -2,7 +2,20 @@
 
 from __future__ import annotations
 
-from typing import Final, Iterable, List, NamedTuple, Optional, Sequence
+from contextlib import contextmanager
+import os
+from typing import (
+    Dict,
+    Final,
+    Iterable,
+    Iterator,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Tuple,
+    cast,
+)
 
 from logrus import Logger
 
@@ -11,6 +24,7 @@ logger = Logger(__name__)
 
 CLI_ARGS_MARK: Final = "ARGS"
 END_MARK: Final = "### END TEST CASE"
+ENV_MARK: Final = "ENV"
 OUTPUT_MARK: Final = "OUTPUT"
 START_MARK_PREFIX: Final = "### TEST CASE"
 
@@ -24,6 +38,7 @@ class Case(NamedTuple):
     name: str
     cli_args: List[str]
     output: str
+    env: Optional[Dict[str, str]]
 
     @classmethod
     def from_comment_lines(cls, lines: Sequence[str]) -> Case:
@@ -35,6 +50,7 @@ class Case(NamedTuple):
 
         cli_args: Optional[List[str]] = None
         output: Optional[str] = None
+        env: Optional[Dict[str, str]] = None
         for line in lines:
             if line.startswith("###"):
                 log.info("Skipping START/END marker.", line=line)
@@ -53,6 +69,12 @@ class Case(NamedTuple):
                 cli_args = value.split(" ")
             elif key == OUTPUT_MARK:
                 output = value
+            elif key == ENV_MARK:
+                env_list = cast(
+                    List[Tuple[str, str]],
+                    [tuple(v.split("=")) for v in value.split(" ")],
+                )
+                env = dict(env_list)
             else:
                 log.warning("Unrecognized key.", key=key, value=value)
 
@@ -63,7 +85,7 @@ class Case(NamedTuple):
             output is not None
         ), f"No OUTPUT defined for the {name!r} test case.\n\n{lines!r}"
 
-        return cls(name, cli_args, output)
+        return cls(name, cli_args, output, env)
 
 
 def case_comments_from_lines(lines: Iterable[str]) -> List[List[str]]:
@@ -81,7 +103,29 @@ def case_comments_from_lines(lines: Iterable[str]) -> List[List[str]]:
         if in_test_case:
             result[-1].append(line)
 
-        if line.strip() == END_MARK:
+        if line == END_MARK:
             in_test_case = False
 
     return result
+
+
+@contextmanager
+def envvars_set(env_dict: Optional[Dict[str, str]]) -> Iterator[None]:
+    """Context manager that sets environment variable values temporarily."""
+    if env_dict is None:
+        yield
+    else:
+        old_envvar_map: Dict[str, str] = {}
+        for envvar, value in env_dict.items():
+            if envvar in os.environ:
+                old_envvar_map[envvar] = os.environ[envvar]
+
+            os.environ[envvar] = value
+
+        yield
+
+        for envvar in env_dict:
+            if envvar in old_envvar_map:
+                os.environ[envvar] = old_envvar_map[envvar]
+            else:
+                del os.environ[envvar]
