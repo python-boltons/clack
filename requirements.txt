@@ -7,9 +7,7 @@
 bolton-logrus==0.1.0
     # via -r requirements.in
 bolton-metaman==0.1.1
-    # via
-    #   -r requirements.in
-    #   bolton-logrus
+    # via bolton-logrus
 bolton-typist==0.1.1
     # via -r requirements.in
 pydantic==1.8.2
