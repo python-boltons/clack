@@ -137,12 +137,21 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         del settings
 
         result: Dict[str, Any] = {}
-        local_group = MutexGroup.from_strings(all_yamls(app_name))
+        app_path = Path(app_name)
+        hidden_app_path = Path("." + app_name)
+
+        local_group = MutexGroup.from_strings(
+            all_yamls(app_path),
+            all_yamls(app_path / app_name),
+            all_yamls(app_path / "config"),
+            all_yamls(hidden_app_path / app_name),
+            all_yamls(hidden_app_path / "config"),
+        )
         populate_result_from_mgroup(result, local_group)
 
         full_xdg_dir = xdg.get_full_dir("config", app_name)
         xdg_group = local_group.bind(
-            [full_xdg_dir / path for path in local_group.config_paths],
+            all_yamls(full_xdg_dir / app_name),
             all_yamls(full_xdg_dir / "config"),
         )
 
