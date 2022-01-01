@@ -7,44 +7,34 @@ from typing import Sequence
 import clack
 
 
-### TEST CASE 1
-#
+# TEST CASE 1
+# -----------
 # ARGS:     --foo=KUNG -B2
 # OUTPUT:   foo=KUNG bar=2 baz=False
-#
-### END TEST CASE
 
-### TEST CASE 2
-#
+# TEST CASE 2
+# -----------
 # ARGS:     --some-bar=3 --baz
 # OUTPUT:   foo=FOO bar=3 baz=True
-#
-### END TEST CASE
 
-### TEST CASE 3
-#
+# TEST CASE 3
+# -----------
 # ARGS:     --baz
 # ENV:      BAR=4
 # OUTPUT:   foo=FOO bar=4 baz=True
-#
-### END TEST CASE
 
-### TEST CASE 4
-#
+# TEST CASE 4
+# -----------
 # ARGS:     -B1 --baz
 # ENV:      BAR=4 FOO=foofoo
 # OUTPUT:   foo=foofoo bar=1 baz=True
-#
-### END TEST CASE
 
-### TEST CASE 5
-#
+# TEST CASE 5
+# -----------
 # ARGS:     --baz
 # CONFIG:   {"foo": "FOOFOOFOO", "bar": "456", "baz": false}
 # ENV:      BAR=123
 # OUTPUT:   foo=FOOFOOFOO bar=123 baz=True
-#
-### END TEST CASE
 
 
 class Config(clack.Config):

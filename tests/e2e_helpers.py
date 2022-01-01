@@ -29,10 +29,9 @@ logger = Logger(__name__)
 
 CLI_ARGS_MARK: Final = "ARGS"
 CONFIG_MARK: Final = "CONFIG"
-END_MARK: Final = "### END TEST CASE"
 ENV_MARK: Final = "ENV"
 OUTPUT_MARK: Final = "OUTPUT"
-START_MARK_PREFIX: Final = "### TEST CASE"
+START_MARK_PREFIX: Final = "# TEST CASE"
 
 
 class Case(NamedTuple):
@@ -121,7 +120,7 @@ def case_comments_from_lines(lines: Iterable[str]) -> List[List[str]]:
         if in_test_case:
             result[-1].append(line)
 
-        if line == END_MARK:
+        if not line.startswith("#"):
             in_test_case = False
 
     return result
