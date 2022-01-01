@@ -35,8 +35,8 @@ def test_end_to_end(capsys: CaptureFixture) -> None:
             "Loading test cases from dummy application.", mod_path=mod_path
         )
         lines = mod_path.read_text().split("\n")
-        all_test_case_comments = case_comments_from_lines(lines)
-        for comment_lines in all_test_case_comments:
+        all_comment_lines = case_comments_from_lines(lines)
+        for comment_lines in all_comment_lines:
             case = Case.from_comment_lines(comment_lines)
             log.info("New test case.", case=case)
 
