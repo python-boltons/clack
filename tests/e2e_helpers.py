@@ -10,6 +10,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Mapping,
     NamedTuple,
     Optional,
     Sequence,
@@ -118,22 +119,22 @@ def case_comments_from_lines(lines: Iterable[str]) -> List[List[str]]:
 
 
 @contextmanager
-def envvars_set(env_dict: Optional[Dict[str, str]]) -> Iterator[None]:
+def envvars_set(env_map: Optional[Mapping[str, str]]) -> Iterator[None]:
     """Context manager that sets environment variable values temporarily."""
-    if env_dict is None:
+    if env_map is None:
         yield
     else:
-        old_envvar_map: Dict[str, str] = {}
-        for envvar, value in env_dict.items():
-            if envvar in os.environ:
-                old_envvar_map[envvar] = os.environ[envvar]
+        old_env_dict: Dict[str, str] = {}
+        for key, value in env_map.items():
+            if key in os.environ:
+                old_env_dict[key] = os.environ[key]
 
-            os.environ[envvar] = value
+            os.environ[key] = value
 
         yield
 
-        for envvar in env_dict:
-            if envvar in old_envvar_map:
-                os.environ[envvar] = old_envvar_map[envvar]
+        for key in env_map:
+            if key in old_env_dict:
+                os.environ[key] = old_env_dict[key]
             else:
-                del os.environ[envvar]
+                del os.environ[key]
