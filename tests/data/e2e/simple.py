@@ -66,5 +66,3 @@ def run(cfg: Config) -> int:
 
 
 main = clack.main_factory("app", run, Config)
-if __name__ == "__main__":
-    main()
