@@ -91,7 +91,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
             self.config_paths = config_paths
 
         @classmethod
-        def from_strings(
+        def from_paths(
             cls, *path_like_list: Union[PathLike, List[PathLike]]
         ) -> "MutexGroup":
             new_path_like_list = []
@@ -140,7 +140,15 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         app_path = Path(app_name)
         hidden_app_path = Path("." + app_name)
 
-        local_group = MutexGroup.from_strings(
+        full_xdg_dir = xdg.get_full_dir("config", app_name)
+        xdg_group = MutexGroup.from_paths(
+            all_yamls(full_xdg_dir / app_name),
+            all_yamls(full_xdg_dir / "config"),
+        )
+
+        populate_result_from_mgroup(result, xdg_group)
+
+        local_group = MutexGroup.from_paths(
             all_yamls(app_path),
             all_yamls(app_path / app_name),
             all_yamls(app_path / "config"),
@@ -148,14 +156,6 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
             all_yamls(hidden_app_path / "config"),
         )
         populate_result_from_mgroup(result, local_group)
-
-        full_xdg_dir = xdg.get_full_dir("config", app_name)
-        xdg_group = local_group.bind(
-            all_yamls(full_xdg_dir / app_name),
-            all_yamls(full_xdg_dir / "config"),
-        )
-
-        populate_result_from_mgroup(result, xdg_group)
 
         return result
 
