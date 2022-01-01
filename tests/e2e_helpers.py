@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+import json
 import os
+from pathlib import Path
 from typing import (
     Dict,
     Final,
@@ -19,11 +21,14 @@ from typing import (
 )
 
 from logrus import Logger
+from typist import PathLike
+import yaml
 
 
 logger = Logger(__name__)
 
 CLI_ARGS_MARK: Final = "ARGS"
+CONFIG_MARK: Final = "CONFIG"
 END_MARK: Final = "### END TEST CASE"
 ENV_MARK: Final = "ENV"
 OUTPUT_MARK: Final = "OUTPUT"
@@ -42,7 +47,7 @@ class Case(NamedTuple):
     env: Optional[Dict[str, str]]
 
     @classmethod
-    def from_comment_lines(cls, lines: Sequence[str]) -> Case:
+    def from_comment_lines(cls, app_name: str, lines: Sequence[str]) -> Case:
         """Constructs a Case object from a single test case's comment lines."""
         log = logger.bind_fargs(locals())
 
@@ -62,7 +67,7 @@ class Case(NamedTuple):
                 log.info("Skipping line which doesn't contain ':'.", line=line)
                 continue
 
-            key, value = line.split(":")
+            key, value = line.split(":", maxsplit=1)
             key = key.upper()
             value = value.lstrip(" ")
 
@@ -76,6 +81,10 @@ class Case(NamedTuple):
                     [tuple(v.split("=")) for v in value.split(" ")],
                 )
                 env = dict(env_list)
+            elif key == CONFIG_MARK:
+                json_config = json.loads(value)
+                with Path(app_name + ".yml").open("w+") as f:
+                    yaml.dump(json_config, f, allow_unicode=True)
             else:
                 log.warning("Unrecognized key.", key=key, value=value)
 
@@ -138,3 +147,14 @@ def envvars_set(env_map: Optional[Mapping[str, str]]) -> Iterator[None]:
                 os.environ[key] = old_env_dict[key]
             else:
                 del os.environ[key]
+
+
+@contextmanager
+def dir_context(new_cwd: PathLike) -> Iterator[None]:
+    new_cwd = Path(new_cwd)
+    old_cwd = os.getcwd()
+    os.chdir(new_cwd)
+
+    yield
+
+    os.chdir(old_cwd)

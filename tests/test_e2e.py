@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List
 
 from _pytest.capture import CaptureFixture
+from _pytest.tmpdir import TempPathFactory
 from logrus import Logger
 from pytest import mark
 
@@ -17,6 +18,7 @@ from .e2e_helpers import (
     START_MARK_PREFIX,
     Case,
     case_comments_from_lines,
+    dir_context,
     envvars_set,
 )
 
@@ -25,29 +27,36 @@ logger = Logger(__name__)
 params = mark.parametrize
 
 
-def test_end_to_end(capsys: CaptureFixture) -> None:
+def test_end_to_end(
+    tmp_path_factory: TempPathFactory, capsys: CaptureFixture
+) -> None:
     """Tests the mini-applications defined in tests/data/e2e."""
     for mod in e2e_test_mods:
         log = logger.bind(mod=mod)
 
-        mod_path = Path(mod.__file__)
-        log.info(
-            "Loading test cases from dummy application.", mod_path=mod_path
-        )
-        lines = mod_path.read_text().split("\n")
-        all_comment_lines = case_comments_from_lines(lines)
-        for comment_lines in all_comment_lines:
-            case = Case.from_comment_lines(comment_lines)
-            log.info("New test case.", case=case)
+        mod_name = mod.__name__.rsplit(".", maxsplit=1)[-1]
+        tmp_path = tmp_path_factory.mktemp(mod_name, numbered=False)
+        tmp_path.mkdir(parents=True, exist_ok=True)
 
-            main: MainType = getattr(mod, "main")
-            with envvars_set(case.env):
-                ec = main([""] + case.cli_args)
+        with dir_context(tmp_path):
+            mod_path = Path(mod.__file__)
+            log.info(
+                "Loading test cases from dummy application.", mod_path=mod_path
+            )
+            lines = mod_path.read_text().split("\n")
+            all_comment_lines = case_comments_from_lines(lines)
+            for comment_lines in all_comment_lines:
+                case = Case.from_comment_lines(mod_name, comment_lines)
+                log.info("New test case.", case=case)
 
-            assert ec == 0
+                main: MainType = getattr(mod, "main")
+                with envvars_set(case.env):
+                    ec = main([mod_name] + case.cli_args)
 
-            capture = capsys.readouterr()
-            assert capture.out.strip() == case.output
+                assert ec == 0
+
+                capture = capsys.readouterr()
+                assert capture.out.strip() == case.output
 
 
 @params(
@@ -65,5 +74,5 @@ def test_from_comment_lines(
 ) -> None:
     """Tests the Case.from_comment_lines() constructor method."""
     lines = [START_MARK_PREFIX + f" {name}"] + lines + [END_MARK]
-    actual = Case.from_comment_lines(lines)
+    actual = Case.from_comment_lines("test_e2e", lines)
     assert actual == expected

@@ -7,7 +7,6 @@ variables IMO.
 from __future__ import annotations
 
 from contextlib import contextmanager
-from functools import lru_cache
 import json
 import os
 from typing import Any, Iterator, Type
@@ -45,7 +44,6 @@ def _config_defaults_from_config_type(
     return result
 
 
-@lru_cache
 def get_app_name() -> str:
     """Getter function for CLACK_APP_NAME envvar.
 
@@ -61,7 +59,6 @@ def get_app_name() -> str:
         ) from e
 
 
-@lru_cache
 def get_config_defaults() -> dict[str, Any]:
     """Getter function for CLACK_CONFIG_DEFAULTS envvar.
 

@@ -37,6 +37,15 @@ import clack
 #
 ### END TEST CASE
 
+### TEST CASE 5
+#
+# ARGS:     --baz
+# CONFIG:   {"foo": "FOOFOOFOO", "bar": "456", "baz": false}
+# ENV:      BAR=123
+# OUTPUT:   foo=FOOFOOFOO bar=123 baz=True
+#
+### END TEST CASE
+
 
 class Config(clack.Config):
     """Application Config."""
@@ -65,4 +74,4 @@ def run(cfg: Config) -> int:
     return 0
 
 
-main = clack.main_factory("app", run, Config)
+main = clack.main_factory("simple", run, Config)
