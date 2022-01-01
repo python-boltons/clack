@@ -89,7 +89,15 @@ class Case(NamedTuple):
 
 
 def case_comments_from_lines(lines: Iterable[str]) -> List[List[str]]:
-    """Constructs a list of Case objects from a file's lines."""
+    """Constructs a list of Case comment blocks from a file's contents.
+
+    Args:
+        lines: A file's contents represented as a list of lines.
+
+    Returns:
+        A list of lists of "comment lines" that can be passed into
+        Case.from_comment_lines().
+    """
     result: List[List[str]] = []
 
     in_test_case = False
