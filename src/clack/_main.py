@@ -8,7 +8,7 @@ from typing import Callable, List, Protocol, Sequence, Type
 
 from logrus import Log, Logger, init_logging
 
-from ._config import ConfigType
+from ._config import Config_T
 from ._dynvars import clack_envvars_set
 
 
@@ -20,9 +20,7 @@ class MainType(Protocol):
 
 
 def main_factory(
-    app_name: str,
-    run: Callable[[ConfigType], int],
-    config_type: Type[ConfigType],
+    app_name: str, run: Callable[[Config_T], int], config_type: Type[Config_T]
 ) -> MainType:
     """Factory used to create a new `main()` function.
 
