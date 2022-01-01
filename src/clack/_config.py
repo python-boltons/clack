@@ -8,17 +8,20 @@ from typing import (
     Callable,
     Dict,
     List,
+    MutableMapping,
     Protocol,
     Sequence,
     Tuple,
     Type,
     TypeVar,
+    Union,
     runtime_checkable,
 )
 
 from logrus import Log
 from pydantic import BaseSettings
 from pydantic.fields import ModelField
+from typist import PathLike
 import yaml
 
 from . import xdg
@@ -83,27 +86,67 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
     reads values from a YAML config file.
     """
 
+    class MutexGroup:
+        def __init__(self, config_paths: List[Path]):
+            self.config_paths = config_paths
+
+        @classmethod
+        def from_strings(
+            cls, *path_like_list: Union[PathLike, List[PathLike]]
+        ) -> "MutexGroup":
+            new_path_like_list = []
+            for x in path_like_list:
+                if isinstance(x, list):
+                    for y in x:
+                        new_path_like_list.append(y)
+                else:
+                    new_path_like_list.append(x)
+            return cls([Path(p) for p in new_path_like_list])
+
+        def bind(
+            self, *extras: Union[PathLike, List[PathLike]]
+        ) -> "MutexGroup":
+            new_extras = []
+            for x in extras:
+                if isinstance(x, list):
+                    for y in x:
+                        new_extras.append(y)
+                else:
+                    new_extras.append(x)
+
+            return MutexGroup(
+                self.config_paths + [Path(p) for p in new_extras]
+            )
+
+    def all_yamls(name: PathLike) -> List[PathLike]:
+        name = str(name)
+        return [name + ".yml", name + ".yaml"]
+
+    def populate_result_from_mgroup(
+        mut_result_map: MutableMapping[str, Any], mgroup: MutexGroup
+    ) -> None:
+        for config_path in mgroup.config_paths:
+            if config_path.is_file():
+                yaml_dict = yaml.load(
+                    config_path.read_bytes(), yaml.SafeLoader
+                )
+                mut_result_map.update(yaml_dict)
+                break
+
     def config_settings(settings: BaseSettings) -> Dict[str, Any]:
         del settings
 
-        all_config_files: List[Path] = []
-        all_basenames = [app_name + ".yml", app_name + ".yaml"]
+        result: Dict[str, Any] = {}
+        local_group = MutexGroup.from_strings(all_yamls(app_name))
+        populate_result_from_mgroup(result, local_group)
 
         full_xdg_dir = xdg.get_full_dir("config", app_name)
-        for basename in all_basenames:
-            fullname = full_xdg_dir / basename
-            all_config_files.append(fullname)
+        xdg_group = local_group.bind(
+            [full_xdg_dir / path for path in local_group.config_paths],
+            all_yamls(full_xdg_dir / "config"),
+        )
 
-        for basename in all_basenames:
-            all_config_files.append(Path(basename))
-
-        result = {}
-        for config_file in all_config_files:
-            if config_file.is_file():
-                yaml_dict = yaml.load(
-                    config_file.read_bytes(), yaml.SafeLoader
-                )
-                result.update(yaml_dict)
+        populate_result_from_mgroup(result, xdg_group)
 
         return result
 

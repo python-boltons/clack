@@ -128,7 +128,7 @@ def case_comments_from_lines(lines: Iterable[str]) -> List[List[str]]:
 
 @contextmanager
 def envvars_set(env_map: Optional[Mapping[str, str]]) -> Iterator[None]:
-    """Context manager that sets environment variable values temporarily."""
+    """Sets environment variable values while in this context ONLY."""
     if env_map is None:
         yield
     else:
@@ -150,6 +150,7 @@ def envvars_set(env_map: Optional[Mapping[str, str]]) -> Iterator[None]:
 
 @contextmanager
 def dir_context(new_cwd: PathLike) -> Iterator[None]:
+    """Chdir to ``new_cwd`` while in this context ONLY."""
     new_cwd = Path(new_cwd)
     old_cwd = os.getcwd()
     os.chdir(new_cwd)
