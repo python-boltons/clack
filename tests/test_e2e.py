@@ -45,9 +45,12 @@ def test_end_to_end(
     all_comment_lines = case_comments_from_lines(lines)
     for comment_lines in all_comment_lines:
         tmp_path = tmp_path_factory.mktemp(mod_name, numbered=False)
-        tmp_path.mkdir(parents=True, exist_ok=True)
+        tmp_xdg_config = tmp_path / ".config"
+        tmp_xdg_config.mkdir(parents=True, exist_ok=True)
 
-        with dir_context(tmp_path):
+        with dir_context(tmp_path), envvars_set(
+            dict(XDG_CONFIG_HOME=str(tmp_xdg_config))
+        ):
             case = Case.from_comment_lines(mod_name, comment_lines)
             log.info("New test case.", case=case)
 

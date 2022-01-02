@@ -33,7 +33,7 @@ CLI_ARGS_MARK: Final = "ARGS"
 CONFIG_MARK: Final = "CONFIG"
 ENV_MARK: Final = "ENV"
 OUTPUT_MARK: Final = "OUTPUT"
-START_MARK_PREFIX: Final = "# TEST CASE"
+START_MARK_PREFIX: Final = "# TEST CASE |"
 
 
 class Case(NamedTuple):
@@ -85,7 +85,7 @@ class Case(NamedTuple):
             elif key == CONFIG_MARK:
                 filename, json_data = value.split(" ", maxsplit=1)
                 filename = filename.replace(
-                    "XDG_CONFIG", str(xdg.get_full_dir("config", app_name))
+                    "XDG", str(xdg.get_full_dir("config", app_name))
                 )
                 json_config = json.loads(json_data)
 

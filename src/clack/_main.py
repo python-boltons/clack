@@ -31,7 +31,9 @@ class MainType(Protocol):
 #     app_name: str,
 #     *,
 #     runners: Iterable[Callable[[AbstractConfig], int]],
-#     parser: Callable[[Sequence[str]], AbstractConfig]
+#     parser: Callable[
+#         [Sequence[str]], ArgumentParser | Namespace | dict[str, Any]
+#     ]
 # ) -> MainType:
 #     ...
 
