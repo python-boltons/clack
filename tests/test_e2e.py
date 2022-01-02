@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import shutil
 from types import ModuleType
 from typing import List
 
@@ -37,17 +38,16 @@ def test_end_to_end(
     log = logger.bind(mod=mod)
 
     mod_name = mod.__name__.rsplit(".", maxsplit=1)[-1]
-    tmp_path = tmp_path_factory.mktemp(mod_name, numbered=False)
-    tmp_path.mkdir(parents=True, exist_ok=True)
 
-    with dir_context(tmp_path):
-        mod_path = Path(mod.__file__)
-        log.info(
-            "Loading test cases from dummy application.", mod_path=mod_path
-        )
-        lines = mod_path.read_text().split("\n")
-        all_comment_lines = case_comments_from_lines(lines)
-        for comment_lines in all_comment_lines:
+    mod_path = Path(mod.__file__)
+    log.info("Loading test cases from dummy application.", mod_path=mod_path)
+    lines = mod_path.read_text().split("\n")
+    all_comment_lines = case_comments_from_lines(lines)
+    for comment_lines in all_comment_lines:
+        tmp_path = tmp_path_factory.mktemp(mod_name, numbered=False)
+        tmp_path.mkdir(parents=True, exist_ok=True)
+
+        with dir_context(tmp_path):
             case = Case.from_comment_lines(mod_name, comment_lines)
             log.info("New test case.", case=case)
 
@@ -59,6 +59,8 @@ def test_end_to_end(
 
             capture = capsys.readouterr()
             assert capture.out.strip() == case.output
+
+        shutil.rmtree(tmp_path)
 
 
 @params(

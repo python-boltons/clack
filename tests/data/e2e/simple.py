@@ -32,7 +32,28 @@ import clack
 # TEST CASE 5
 # -----------
 # ARGS:     --baz
-# CONFIG:   {"foo": "FOOFOOFOO", "bar": "456", "baz": false}
+# CONFIG:   simple.yml {"foo": "FOOFOOFOO", "bar": "456", "baz": false}
+# ENV:      BAR=123
+# OUTPUT:   foo=FOOFOOFOO bar=123 baz=True
+
+# TEST CASE 6
+# -----------
+# ARGS:     --baz
+# CONFIG:   simple/simple.yaml {"foo": "FOOFOOFOO", "bar": "456", "baz": false}
+# ENV:      BAR=123
+# OUTPUT:   foo=FOOFOOFOO bar=123 baz=True
+
+# TEST CASE 7
+# -----------
+# ARGS:     --baz
+# CONFIG:   simple/config.yml {"foo": "FOOFOOFOO", "bar": "456", "baz": false}
+# ENV:      BAR=123
+# OUTPUT:   foo=FOOFOOFOO bar=123 baz=True
+
+# TEST CASE 8
+# -----------
+# ARGS:     --baz
+# CONFIG:   .simple/config.yaml {"foo": "FOOFOOFOO", "bar": "456", "baz": false}
 # ENV:      BAR=123
 # OUTPUT:   foo=FOOFOOFOO bar=123 baz=True
 

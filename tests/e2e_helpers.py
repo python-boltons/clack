@@ -24,6 +24,8 @@ from logrus import Logger
 from typist import PathLike
 import yaml
 
+from clack import xdg
+
 
 logger = Logger(__name__)
 
@@ -81,8 +83,15 @@ class Case(NamedTuple):
                 )
                 env = dict(env_list)
             elif key == CONFIG_MARK:
-                json_config = json.loads(value)
-                with Path(app_name + ".yml").open("w+") as f:
+                filename, json_data = value.split(" ", maxsplit=1)
+                filename = filename.replace(
+                    "XDG_CONFIG", str(xdg.get_full_dir("config", app_name))
+                )
+                json_config = json.loads(json_data)
+
+                filepath = Path(filename)
+                filepath.parent.mkdir(parents=True, exist_ok=True)
+                with filepath.open("w+") as f:
                     yaml.dump(json_config, f, allow_unicode=True)
             else:
                 log.warning("Unrecognized key.", key=key, value=value)
