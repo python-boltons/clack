@@ -137,13 +137,19 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         """The pydantic.BaseSettings source callable that we will return."""
         del settings
 
-        # user config files used by ALL clack apps
-        #
-        # e.g. ~/.config/clack/global.yml OR ~/.config/clack/apps/all.yml...
+        ##### helper variables used by mutex groups...
+        app_path = Path(app_name)
         base_xdg_dir = xdg.get_base_dir("config")
         clack_xdg_dir = base_xdg_dir / "clack"
         clack_apps_dir = clack_xdg_dir / "apps"
-        USER_GROUP_FOR_ALL_APPS = MutexConfigGroup.from_path_lists(
+        full_xdg_dir = xdg.get_full_dir("config", app_name)
+        hidden_app_path = Path("." + app_name)
+
+        ##### MutexConfigGroup variable definitions.
+        # user config files used by ALL clack apps
+        #
+        # e.g. ~/.config/clack/global.yml OR ~/.config/clack/apps/all.yml...
+        user_group_for_all_apps = MutexConfigGroup.from_path_lists(
             all_yamls(clack_xdg_dir / "global"),
             all_yamls(clack_apps_dir / "all"),
         )
@@ -152,8 +158,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         #
         # e.g. ~/.config/APP/APP.yml OR ~/.config/APP/config.yml OR
         #      ~/.config/clack/apps/APP.yml...
-        full_xdg_dir = xdg.get_full_dir("config", app_name)
-        USER_GROUP_FOR_THIS_APP = MutexConfigGroup.from_path_lists(
+        user_group_for_this_app = MutexConfigGroup.from_path_lists(
             all_yamls(full_xdg_dir / app_name),
             all_yamls(full_xdg_dir / "config"),
             all_yamls(clack_apps_dir / app_name),
@@ -163,9 +168,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         #
         # e.g. ./APP.yml OR ./APP.yaml OR ./APP/APP.yml OR ./APP/config.yaml OR
         #      ./.APP/APP.yaml OR ./.APP/config.yml...
-        app_path = Path(app_name)
-        hidden_app_path = Path("." + app_name)
-        LOCAL_GROUP_FOR_THIS_APP = MutexConfigGroup.from_path_lists(
+        local_group_for_this_app = MutexConfigGroup.from_path_lists(
             all_yamls(app_name),
             all_yamls(app_path / app_name),
             all_yamls(app_path / "config"),
@@ -173,6 +176,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
             all_yamls(hidden_app_path / "config"),
         )
 
+        ##### Populate and then return dict of configuration values.
         result: Dict[str, Any] = {}
 
         # Fill the `result` configuration mapping by calling the
@@ -181,9 +185,9 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         # WARNING: Order matters here since groups called first will
         # potentially have their configurations overwritten by groups called
         # later.
-        USER_GROUP_FOR_ALL_APPS.populate_config_map(result)
-        USER_GROUP_FOR_THIS_APP.populate_config_map(result)
-        LOCAL_GROUP_FOR_THIS_APP.populate_config_map(result)
+        user_group_for_all_apps.populate_config_map(result)
+        user_group_for_this_app.populate_config_map(result)
+        local_group_for_this_app.populate_config_map(result)
 
         return result
 
