@@ -85,58 +85,105 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
     reads values from a YAML config file.
     """
 
-    class MutexGroup:
+    class MutexConfigGroup:
+        """Mutually Exclusive Configuration File Group.
+
+        A single MutexConfigGroup object specifies one or more configuration
+        file locations. We will ONLY load configuration values from the FIRST
+        configuration file in this group that exists on disk (if any do).
+        """
+
         def __init__(self, config_paths: List[Path]):
             self.config_paths = config_paths
 
         @classmethod
-        def from_paths(
-            cls, *nested_path_like_list: List[PathLike]
-        ) -> "MutexGroup":
-            flat_path_like_list = []
-            for path_like_list in nested_path_like_list:
+        def from_path_lists(
+            cls, *path_like_lists: List[PathLike]
+        ) -> "MutexConfigGroup":
+            """MutexConfigGroup class constructor.
+
+            Given N lists of config file paths, construct a new
+            MutexConfigGroup object.
+            """
+            flat_path_list = []
+            for path_like_list in path_like_lists:
                 for path_like in path_like_list:
-                    flat_path_like_list.append(path_like)
-            return cls([Path(p) for p in flat_path_like_list])
+                    flat_path_list.append(Path(path_like))
+            return cls(flat_path_list)
+
+        def populate_config_map(
+            self, mut_config_map: MutableMapping[str, Any]
+        ) -> None:
+            """Populate values for a config mapping using this mutex group.
+
+            Set configuration options (by adding keys to the ``mut_config_map``
+            mapping) using (at most) one of the config files corresponding with
+            the ``mgroup`` MutexConfigGroup.
+            """
+            for config_path in self.config_paths:
+                if config_path.is_file():
+                    yaml_dict = yaml.load(
+                        config_path.read_bytes(), yaml.SafeLoader
+                    )
+                    mut_config_map.update(yaml_dict)
+                    break
 
     def all_yamls(name: PathLike) -> List[PathLike]:
+        """Helper function that adds support for all YAML filename exts."""
         name = str(name)
         return [name + ".yml", name + ".yaml"]
 
-    def populate_result_from_mgroup(
-        mut_result_map: MutableMapping[str, Any], mgroup: MutexGroup
-    ) -> None:
-        for config_path in mgroup.config_paths:
-            if config_path.is_file():
-                yaml_dict = yaml.load(
-                    config_path.read_bytes(), yaml.SafeLoader
-                )
-                mut_result_map.update(yaml_dict)
-                break
-
     def config_settings(settings: BaseSettings) -> Dict[str, Any]:
+        """The pydantic.BaseSettings source callable that we will return."""
         del settings
 
-        result: Dict[str, Any] = {}
-        app_path = Path(app_name)
-        hidden_app_path = Path("." + app_name)
-
-        full_xdg_dir = xdg.get_full_dir("config", app_name)
-        xdg_group = MutexGroup.from_paths(
-            all_yamls(full_xdg_dir / app_name),
-            all_yamls(full_xdg_dir / "config"),
+        # user config files used by ALL clack apps
+        #
+        # e.g. ~/.config/clack/global.yml OR ~/.config/clack/apps/all.yml...
+        base_xdg_dir = xdg.get_base_dir("config")
+        clack_xdg_dir = base_xdg_dir / "clack"
+        clack_apps_dir = clack_xdg_dir / "apps"
+        user_group_for_all_apps = MutexConfigGroup.from_path_lists(
+            all_yamls(clack_xdg_dir / "global"),
+            all_yamls(clack_apps_dir / "all"),
         )
 
-        populate_result_from_mgroup(result, xdg_group)
+        # app-specific user config files
+        #
+        # e.g. ~/.config/APP/APP.yml OR ~/.config/APP/config.yml OR
+        #      ~/.config/clack/apps/APP.yml...
+        full_xdg_dir = xdg.get_full_dir("config", app_name)
+        user_group_for_this_app = MutexConfigGroup.from_path_lists(
+            all_yamls(full_xdg_dir / app_name),
+            all_yamls(full_xdg_dir / "config"),
+            all_yamls(clack_apps_dir / app_name),
+        )
 
-        local_group = MutexGroup.from_paths(
+        # app-specific config files that are local to the CWD
+        #
+        # e.g. ./APP.yml OR ./APP.yaml OR ./APP/APP.yml OR ./APP/config.yaml OR
+        #      ./.APP/APP.yaml OR ./.APP/config.yml...
+        app_path = Path(app_name)
+        hidden_app_path = Path("." + app_name)
+        local_group_for_this_app = MutexConfigGroup.from_path_lists(
             all_yamls(app_name),
             all_yamls(app_path / app_name),
             all_yamls(app_path / "config"),
             all_yamls(hidden_app_path / app_name),
             all_yamls(hidden_app_path / "config"),
         )
-        populate_result_from_mgroup(result, local_group)
+
+        result: Dict[str, Any] = {}
+
+        # Fill the `result` configuration mapping by calling the
+        # MutexConfigGroup.populate_config_map() method for each group...
+        #
+        # WARNING: Order matters here since groups called first will
+        # potentially have their configurations overwritten by groups called
+        # later.
+        user_group_for_all_apps.populate_config_map(result)
+        user_group_for_this_app.populate_config_map(result)
+        local_group_for_this_app.populate_config_map(result)
 
         return result
 

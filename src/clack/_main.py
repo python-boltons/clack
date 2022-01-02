@@ -19,6 +19,23 @@ class MainType(Protocol):
         """This method captures the `main()` function's signature."""
 
 
+# @overload
+# def main_factory(
+#     app_name: str, run: Callable[[AbstractConfig], int]
+# ) -> MainType:
+#     ...
+
+
+# @overload
+# def main_factory(
+#     app_name: str,
+#     *,
+#     runners: Iterable[Callable[[AbstractConfig], int]],
+#     parser: Callable[[Sequence[str]], AbstractConfig]
+# ) -> MainType:
+#     ...
+
+
 def main_factory(
     app_name: str, run: Callable[[Config_T], int], config_type: Type[Config_T]
 ) -> MainType:
