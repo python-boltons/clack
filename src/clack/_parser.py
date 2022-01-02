@@ -155,7 +155,10 @@ def _patch_add_argument_method(parser: argparse.ArgumentParser) -> None:
     def add_argument(*args: Any, **kwargs: Any) -> None:
         if "default" not in kwargs:
             field_name = _get_field_name(args, kwargs)
-            default = _get_add_argument_default(field_name)
+            config_defaults = get_config_defaults()
+            default = config_defaults.get(
+                field_name, _ARGPARSE_ARGUMENT_DEFAULT
+            )
             kwargs["default"] = default
 
         argparse.ArgumentParser.add_argument(parser, *args, **kwargs)
@@ -176,11 +179,6 @@ def _get_field_name(args: Sequence[str], kwargs: Mapping[str, Any]) -> str:
         long_opt = args[1]
 
     return long_opt.lstrip("-").replace("-", "_")
-
-
-def _get_add_argument_default(field_name: str) -> Any:
-    config_defaults = get_config_defaults()
-    return config_defaults.get(field_name, _ARGPARSE_ARGUMENT_DEFAULT)
 
 
 def _log_type_factory(app_name: str) -> Callable[[str], Log]:
