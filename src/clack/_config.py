@@ -143,7 +143,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         base_xdg_dir = xdg.get_base_dir("config")
         clack_xdg_dir = base_xdg_dir / "clack"
         clack_apps_dir = clack_xdg_dir / "apps"
-        user_group_for_all_apps = MutexConfigGroup.from_path_lists(
+        USER_GROUP_FOR_ALL_APPS = MutexConfigGroup.from_path_lists(
             all_yamls(clack_xdg_dir / "global"),
             all_yamls(clack_apps_dir / "all"),
         )
@@ -153,7 +153,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         # e.g. ~/.config/APP/APP.yml OR ~/.config/APP/config.yml OR
         #      ~/.config/clack/apps/APP.yml...
         full_xdg_dir = xdg.get_full_dir("config", app_name)
-        user_group_for_this_app = MutexConfigGroup.from_path_lists(
+        USER_GROUP_FOR_THIS_APP = MutexConfigGroup.from_path_lists(
             all_yamls(full_xdg_dir / app_name),
             all_yamls(full_xdg_dir / "config"),
             all_yamls(clack_apps_dir / app_name),
@@ -165,7 +165,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         #      ./.APP/APP.yaml OR ./.APP/config.yml...
         app_path = Path(app_name)
         hidden_app_path = Path("." + app_name)
-        local_group_for_this_app = MutexConfigGroup.from_path_lists(
+        LOCAL_GROUP_FOR_THIS_APP = MutexConfigGroup.from_path_lists(
             all_yamls(app_name),
             all_yamls(app_path / app_name),
             all_yamls(app_path / "config"),
@@ -181,9 +181,9 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         # WARNING: Order matters here since groups called first will
         # potentially have their configurations overwritten by groups called
         # later.
-        user_group_for_all_apps.populate_config_map(result)
-        user_group_for_this_app.populate_config_map(result)
-        local_group_for_this_app.populate_config_map(result)
+        USER_GROUP_FOR_ALL_APPS.populate_config_map(result)
+        USER_GROUP_FOR_THIS_APP.populate_config_map(result)
+        LOCAL_GROUP_FOR_THIS_APP.populate_config_map(result)
 
         return result
 
