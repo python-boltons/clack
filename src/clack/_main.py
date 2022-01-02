@@ -2,14 +2,33 @@
 
 from __future__ import annotations
 
+from argparse import ArgumentParser, Namespace
 import signal
 import sys
-from typing import Callable, List, Protocol, Sequence, Type
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Protocol,
+    Sequence,
+    Union,
+    get_type_hints,
+    overload,
+)
 
-from logrus import Log, Logger, init_logging
+from logrus import BetterBoundLogger, Log, Logger, init_logging
 
-from ._config import Config_T
+from ._config import AbstractConfig, Config_T
 from ._dynvars import clack_envvars_set
+
+
+Parser = Callable[
+    [Sequence[str]], Union[ArgumentParser, Namespace, Dict[str, Any]]
+]
+ParserFactory = Callable[[], ArgumentParser]
+Runner = Callable[[Config_T], int]
 
 
 class MainType(Protocol):
@@ -19,43 +38,69 @@ class MainType(Protocol):
         """This method captures the `main()` function's signature."""
 
 
-# @overload
-# def main_factory(
-#     app_name: str, run: Callable[[AbstractConfig], int]
-# ) -> MainType:
-#     ...
+@overload
+def main_factory(app_name: str, run: Runner) -> MainType:
+    ...
 
 
-# @overload
-# def main_factory(
-#     app_name: str,
-#     *,
-#     runners: Iterable[Callable[[AbstractConfig], int]],
-#     parser: Callable[
-#         [Sequence[str]], ArgumentParser | Namespace | dict[str, Any]
-#     ]
-# ) -> MainType:
-#     ...
+@overload
+def main_factory(
+    app_name: str, *, runners: Iterable[Runner], parser: Parser
+) -> MainType:
+    ...
+
+
+@overload
+def main_factory(
+    app_name: str, *, runners: Iterable[Runner], parser: ParserFactory
+) -> MainType:
+    ...
 
 
 def main_factory(
-    app_name: str, run: Callable[[Config_T], int], config_type: Type[Config_T]
+    app_name: str,
+    run: Runner = None,
+    *,
+    runners: Iterable[Runner] = None,
+    parser: Parser | ParserFactory | None = None
 ) -> MainType:
     """Factory used to create a new `main()` function.
-
-    Args:
-        app_name: The name of the currently running application.
-        run: A function that acts as the real entry point for a program.
-        config_type: A pydantic.BaseSettings type that represents our
-          application's config.
 
     Returns:
         A generic main() function to be used as a script's entry point.
     """
 
+    del runners
+    del parser
+
+    def run_and_get_status(
+        run: Runner, cfg: AbstractConfig, *, logger: BetterBoundLogger
+    ) -> int:
+        try:
+            status = run(cfg)
+        except KeyboardInterrupt:  # pragma: no cover
+            logger.info("Received SIGINT signal. Terminating script...")
+            return 128 + signal.SIGINT.value
+        except Exception:  # pragma: no cover
+            logger.exception(
+                "An unrecoverable error has been raised. Terminating script..."
+            )
+            return 1
+        else:
+            return status
+
     def main(argv: Sequence[str] = None) -> int:
         if argv is None:  # pragma: no cover
             argv = sys.argv
+
+        assert run is not None
+        run_hints = get_type_hints(run)
+        try:
+            config_type = run_hints["cfg"]
+        except KeyError as e:
+            raise RuntimeError(
+                "Logic Error! Every runner function should have a 'cfg' kwarg!"
+            ) from e
 
         with clack_envvars_set(app_name, config_type):
             cfg = config_type.from_cli_args(argv)
@@ -75,17 +120,6 @@ def main_factory(
         logger.trace("TRACE level logging enabled.")
         logger.debug("DEBUG level logging enabled.")
 
-        try:
-            status = run(cfg)
-        except KeyboardInterrupt:  # pragma: no cover
-            logger.info("Received SIGINT signal. Terminating script...")
-            return 128 + signal.SIGINT.value
-        except Exception:  # pragma: no cover
-            logger.exception(
-                "An unrecoverable error has been raised. Terminating script..."
-            )
-            return 1
-        else:
-            return status
+        return run_and_get_status(run, cfg, logger=logger)
 
     return main
