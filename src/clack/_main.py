@@ -18,7 +18,7 @@ from typing import (
     overload,
 )
 
-from logrus import BetterBoundLogger, Log, Logger, init_logging
+from logrus import Log, Logger, init_logging
 
 from ._config import AbstractConfig, Config_T
 from ._dynvars import clack_envvars_set
@@ -73,9 +73,20 @@ def main_factory(
     del runners
     del parser
 
-    def run_and_get_status(
-        run: Runner, cfg: AbstractConfig, *, logger: BetterBoundLogger
-    ) -> int:
+    def main_worker(run: Runner, cfg: AbstractConfig) -> int:
+        verbose: int = getattr(cfg, "verbose", 0)
+        logs: List[Log] = getattr(cfg, "logs", [])
+
+        init_logging(logs=logs, verbose=verbose)
+
+        logger = Logger("clack", app_name=app_name, cfg=cfg)
+
+        # The following log messages will obviously only be visible if the
+        # corresponding log level really is enabled, but stating the obvious in
+        # this case seemed like the right thing to do so ¯\_(ツ)_/¯.
+        logger.trace("TRACE level logging enabled.")
+        logger.debug("DEBUG level logging enabled.")
+
         try:
             status = run(cfg)
         except KeyboardInterrupt:  # pragma: no cover
@@ -105,21 +116,6 @@ def main_factory(
         with clack_envvars_set(app_name, config_type):
             cfg = config_type.from_cli_args(argv)
 
-        verbose: int = getattr(cfg, "verbose", 0)
-        logs: List[Log] = getattr(cfg, "logs", [])
-
-        init_logging(logs=logs, verbose=verbose)
-
-        logger = Logger("clack", app_name=app_name, cfg=cfg).bind_fargs(
-            argv=argv
-        )
-
-        # The following log messages will obviously only be visible if the
-        # corresponding log level really is enabled, but stating the obvious in
-        # this case seemed like the right thing to do so ¯\_(ツ)_/¯.
-        logger.trace("TRACE level logging enabled.")
-        logger.debug("DEBUG level logging enabled.")
-
-        return run_and_get_status(run, cfg, logger=logger)
+        return main_worker(run, cfg)
 
     return main
