@@ -14,7 +14,6 @@ from typing import (
     Tuple,
     Type,
     TypeVar,
-    Union,
     runtime_checkable,
 )
 
@@ -92,31 +91,13 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
 
         @classmethod
         def from_paths(
-            cls, *path_like_list: Union[PathLike, List[PathLike]]
+            cls, *nested_path_like_list: List[PathLike]
         ) -> "MutexGroup":
-            new_path_like_list = []
-            for x in path_like_list:
-                if isinstance(x, list):
-                    for y in x:
-                        new_path_like_list.append(y)
-                else:
-                    new_path_like_list.append(x)
-            return cls([Path(p) for p in new_path_like_list])
-
-        def bind(
-            self, *extras: Union[PathLike, List[PathLike]]
-        ) -> "MutexGroup":
-            new_extras = []
-            for x in extras:
-                if isinstance(x, list):
-                    for y in x:
-                        new_extras.append(y)
-                else:
-                    new_extras.append(x)
-
-            return MutexGroup(
-                self.config_paths + [Path(p) for p in new_extras]
-            )
+            flat_path_like_list = []
+            for path_like_list in nested_path_like_list:
+                for path_like in path_like_list:
+                    flat_path_like_list.append(path_like)
+            return cls([Path(p) for p in flat_path_like_list])
 
     def all_yamls(name: PathLike) -> List[PathLike]:
         name = str(name)
