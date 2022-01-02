@@ -149,7 +149,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         populate_result_from_mgroup(result, xdg_group)
 
         local_group = MutexGroup.from_paths(
-            all_yamls(app_path),
+            all_yamls(app_name),
             all_yamls(app_path / app_name),
             all_yamls(app_path / "config"),
             all_yamls(hidden_app_path / app_name),
