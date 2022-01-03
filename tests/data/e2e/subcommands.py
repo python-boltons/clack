@@ -28,6 +28,12 @@ import clack
 # ENV:      FOO=KUNGFOO
 # OUTPUT:   foo=KUNGFOO
 
+# TEST CASE | Does a config file work?
+# ----------+--------------------------------
+# ARGS:     foo
+# CONFIG:   subcommands.yml {"foo": "FOOCONF"}
+# OUTPUT:   foo=FOOCONF
+
 
 BarCommand = Literal["bar"]
 BazCommand = Literal["baz"]
