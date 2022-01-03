@@ -52,8 +52,8 @@ import clack
 # TEST CASE | XDG locations should be overriden by user locations.
 # ----------+-----------------------------------------------------
 # ARGS:     --baz
-# CONFIG:   .simple/config.yml {"foo": "LocalFoo", "bar": "456"}
-# CONFIG:   XDG/simple.yml {"foo": "UserFoo"}
+# CONFIG:   .simple/config.yml {"foo": "LocalFoo"}
+# CONFIG:   XDG/simple.yml {"foo": "UserFoo", "bar": "456"}
 # OUTPUT:   foo=LocalFoo bar=456 baz=True
 
 
@@ -73,7 +73,7 @@ class Config(clack.Config):
         parser.add_argument("--baz", action="store_true")
 
         args = parser.parse_args(argv[1:])
-        kwargs = clack.args_to_kwargs(args)
+        kwargs = clack.filter_cli_kwargs(args)
 
         return Config(**kwargs)
 

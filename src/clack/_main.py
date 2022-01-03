@@ -2,33 +2,48 @@
 
 from __future__ import annotations
 
-from argparse import ArgumentParser, Namespace
 import signal
 import sys
 from typing import (
     Any,
     Callable,
     Dict,
+    Final,
     Iterable,
     List,
     Protocol,
     Sequence,
-    Union,
+    Type,
+    cast,
     get_type_hints,
     overload,
 )
 
 from logrus import Log, Logger, init_logging
+from typist import literal_to_list
 
 from ._config import AbstractConfig, Config_T
 from ._dynvars import clack_envvars_set
+from ._parser import filter_cli_kwargs
 
 
-Parser = Callable[
-    [Sequence[str]], Union[ArgumentParser, Namespace, Dict[str, Any]]
-]
-ParserFactory = Callable[[], ArgumentParser]
+Parser = Callable[[Sequence[str]], Dict[str, Any]]
 Runner = Callable[[Config_T], int]
+
+ASSERT_MAIN_FACTORY_PRECOND: Final = (
+    "EXACTLY ONE of the following MUST be true when calling the"
+    " clack.main_factory() function: (1) The 'run' positional argument is"
+    " provided OR (2) the 'runners' and 'parser' keyword-only arguments are"
+    " BOTH provided."
+)
+ASSERT_MAIN_RUNNERS_PRECOND: Final = (
+    "ALL runners must have a clack.Config 'cfg' positional argument which"
+    ' inherit from the SAME shared clack.Config subclass. This "shared'
+    " Config\" should have a 'command' attribute that is typed as a"
+    " typing.Literal, say CommandLiteral. Additionally, all subclasses of this"
+    " shared Config MUST have a 'command' attribute that is typed as a"
+    " typing.Literal which is a a subtype of CommandLiteral"
+)
 
 
 class MainType(Protocol):
@@ -50,19 +65,12 @@ def main_factory(
     ...
 
 
-@overload
-def main_factory(
-    app_name: str, *, runners: Iterable[Runner], parser: ParserFactory
-) -> MainType:
-    ...
-
-
 def main_factory(
     app_name: str,
     run: Runner = None,
     *,
     runners: Iterable[Runner] = None,
-    parser: Parser | ParserFactory | None = None
+    parser: Parser = None,
 ) -> MainType:
     """Factory used to create a new `main()` function.
 
@@ -70,10 +78,14 @@ def main_factory(
         A generic main() function to be used as a script's entry point.
     """
 
-    del runners
-    del parser
+    run_is_set = bool(run is not None)
+    kwargs_only = bool(runners is not None and parser is not None)
 
-    def main_worker(run: Runner, cfg: AbstractConfig) -> int:
+    assert run_is_set or kwargs_only, ASSERT_MAIN_FACTORY_PRECOND
+    assert not (run_is_set and kwargs_only), ASSERT_MAIN_FACTORY_PRECOND
+    assert runners is not None or parser is None, ASSERT_MAIN_FACTORY_PRECOND
+
+    def do_main_work(run: Runner, cfg: AbstractConfig) -> int:
         verbose: int = getattr(cfg, "verbose", 0)
         logs: List[Log] = getattr(cfg, "logs", [])
 
@@ -100,22 +112,126 @@ def main_factory(
         else:
             return status
 
-    def main(argv: Sequence[str] = None) -> int:
-        if argv is None:  # pragma: no cover
-            argv = sys.argv
+    def wrap_main(outer_main: Callable[[Sequence[str]], int]) -> MainType:
+        def inner_main(argv: Sequence[str] = None) -> int:
+            if argv is None:  # pragma: no cover
+                argv = sys.argv
 
+            return outer_main(argv)
+
+        return inner_main
+
+    def main_run(argv: Sequence[str]) -> int:
         assert run is not None
-        run_hints = get_type_hints(run)
-        try:
-            config_type = run_hints["cfg"]
-        except KeyError as e:
-            raise RuntimeError(
-                "Logic Error! Every runner function should have a 'cfg' kwarg!"
-            ) from e
 
+        config_type = _get_run_cfg(run)
         with clack_envvars_set(app_name, config_type):
             cfg = config_type.from_cli_args(argv)
 
-        return main_worker(run, cfg)
+        return do_main_work(run, cfg)
 
-    return main
+    def main_runners(argv: Sequence[str]) -> int:
+        assert runners is not None
+        assert parser is not None
+
+        runner_list = list(runners)
+        shared_cfg = _get_run_cfg(runner_list[0])
+
+        assert all(
+            _get_run_cfg(runner).mro()[0] is shared_cfg
+            for runner in runner_list[1:]
+        ), ASSERT_MAIN_RUNNERS_PRECOND
+
+        parser_kwargs = parser(argv)
+
+        all_config_types = _get_all_config_types(runner_list)
+        config_type = _config_type_from_command(
+            all_config_types, parser_kwargs["command"]
+        )
+
+        filtered_kwargs = filter_cli_kwargs(parser_kwargs)
+        cfg = config_type(**filtered_kwargs)  # type: ignore[call-arg]
+        run = _main_runner_factory(runner_list)
+
+        return do_main_work(run, cfg)
+
+    if run is None:
+        return wrap_main(main_runners)
+    else:
+        return wrap_main(main_run)
+
+
+def _main_runner_factory(
+    runners: Sequence[Runner],
+) -> Callable[[Config_T], int]:
+    def run(cfg: Any) -> int:
+        for run in runners:
+            run_config_type = _get_run_cfg(run)
+            if isinstance(cfg, run_config_type):
+                return run(cfg)
+
+        return -1
+
+    return run
+
+
+def _get_run_cfg(run: Runner) -> Type[AbstractConfig]:
+    run_hints = get_type_hints(run)
+    try:
+        cfg: Type[AbstractConfig] = run_hints["cfg"]
+        return cfg
+    except KeyError as e:
+        raise AssertionError(
+            "Logic Error! Every runner function should have a 'cfg' kwarg!"
+        ) from e
+
+
+def _config_type_from_command(
+    all_config_types: Iterable[Type[AbstractConfig]],
+    choosen_command: str,
+) -> Type[AbstractConfig]:
+    config_type_to_command = {}
+    for some_config_type in all_config_types:
+        some_command = _get_single_command(some_config_type)
+        config_type_to_command[some_config_type] = some_command
+        if some_command == choosen_command:
+            return some_config_type
+
+    raise AssertionError(
+        "Logic Error! None of the given Config types seem to match the choosen"
+        " sub-command.  |  "
+        + ASSERT_MAIN_RUNNERS_PRECOND
+        + f"  |  {config_type_to_command!r}"
+    )
+
+
+def _get_all_commands(config_type: Type[AbstractConfig]) -> List[str]:
+    config_type_hints = get_type_hints(config_type)
+    try:
+        command_type = config_type_hints["command"]
+    except KeyError as e:
+        raise AssertionError(
+            "Logic Error! When using sub-commands in your CLI interface with"
+            " clack, ALL Config classes MUST have a 'command' attribute!"
+        ) from e
+    else:
+        result = cast(List[str], literal_to_list(command_type))
+        return result
+
+
+def _get_single_command(config_type: Type[AbstractConfig]) -> str:
+    all_commands = _get_all_commands(config_type)
+    assert len(all_commands) == 1, (
+        ASSERT_MAIN_RUNNERS_PRECOND + f" | {all_commands!r}"
+    )
+    return all_commands[0]
+
+
+def _get_all_config_types(
+    runners: Iterable[Runner],
+) -> List[Type[AbstractConfig]]:
+    result: List[Type[AbstractConfig]] = []
+    for runner in runners:
+        config_type = _get_run_cfg(runner)
+        result.append(config_type)
+    return result

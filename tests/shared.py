@@ -17,6 +17,6 @@ class Config(clack.Config):
         parser.add_argument("--do-stuff", action="store_true")
 
         args = parser.parse_args(argv[1:])
-        kwargs = clack.args_to_kwargs(args)
+        kwargs = clack.filter_cli_kwargs(args)
 
         return Config(**kwargs)

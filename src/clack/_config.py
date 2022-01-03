@@ -26,13 +26,14 @@ import yaml
 from . import xdg
 
 
-Config_T = TypeVar("Config_T", bound="AbstractConfig", covariant=True)
+Config_T = TypeVar("Config_T", bound="AbstractConfig")
+co_Config_T = TypeVar("co_Config_T", bound="AbstractConfig", covariant=True)
 
 _SettingsSource = Callable[[BaseSettings], Dict[str, Any]]
 
 
 @runtime_checkable
-class AbstractConfig(Protocol[Config_T]):
+class AbstractConfig(Protocol[co_Config_T]):
     """Application Configuration Protocol
 
     In other words, this class describes what an application Config object
@@ -42,7 +43,9 @@ class AbstractConfig(Protocol[Config_T]):
     __fields__: Dict[str, ModelField]
 
     @classmethod
-    def from_cli_args(cls: Type[Config_T], argv: Sequence[str]) -> Config_T:
+    def from_cli_args(
+        cls: Type[co_Config_T], argv: Sequence[str]
+    ) -> co_Config_T:
         """Constructs a new Config object from command-line arguments."""
 
 

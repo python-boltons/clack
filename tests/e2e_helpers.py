@@ -125,12 +125,11 @@ def case_comments_from_lines(lines: Iterable[str]) -> List[List[str]]:
         if line.startswith(START_MARK_PREFIX):
             result.append([])
             in_test_case = True
+        elif not line.startswith("#"):
+            in_test_case = False
 
         if in_test_case:
             result[-1].append(line)
-
-        if not line.startswith("#"):
-            in_test_case = False
 
     return result
 
