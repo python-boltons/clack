@@ -64,24 +64,6 @@ def pformat_captured(captured: CaptureResult) -> str:
     )
 
 
-@fixture(autouse=True)
-def clear_loggers() -> None:
-    """Remove handlers from all loggers and unconfigure structlog.
-
-    See https://github.com/pytest-dev/pytest/issues/5502 for an explanation on
-    why we need this fixture.
-    """
-    loggers = [logging.getLogger()] + list(
-        logging.Logger.manager.loggerDict.values()  # type: ignore[arg-type]
-    )
-    for logger in loggers:
-        handlers = getattr(logger, "handlers", [])
-        for handler in handlers:
-            logger.removeHandler(handler)
-
-    structlog.reset_defaults()
-
-
 @params("logger_type", ["logging", "structlog"])
 @params(
     "args",
