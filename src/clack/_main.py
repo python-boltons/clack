@@ -24,7 +24,7 @@ from typist import literal_to_list
 
 from . import _dynvars as dyn
 from ._config import AbstractConfig, Config_T
-from ._parser import filter_cli_kwargs
+from ._parser import filter_cli_args
 
 
 Parser = Callable[[Sequence[str]], Dict[str, Any]]
@@ -85,6 +85,35 @@ def main_factory(
     assert not (run_is_set and kwargs_only), ASSERT_MAIN_FACTORY_PRECOND
     assert runners is not None or parser is None, ASSERT_MAIN_FACTORY_PRECOND
 
+    def main_run(argv: Sequence[str]) -> int:
+        assert run is not None
+
+        config_type = _get_run_cfg(run)
+        with dyn.clack_envvars_set(app_name, [config_type]):
+            cfg = config_type.from_cli_args(argv)
+
+        return do_main_work(run, cfg)
+
+    def main_runners(argv: Sequence[str]) -> int:
+        assert runners is not None
+        assert parser is not None
+
+        runner_list = list(runners)
+        all_config_types = _get_all_config_types(runner_list)
+
+        with dyn.clack_envvars_set(app_name, all_config_types):
+            parser_kwargs = parser(argv)
+
+        config_type = _config_type_from_command(
+            all_config_types, parser_kwargs["command"]
+        )
+
+        filtered_kwargs = filter_cli_args(parser_kwargs)
+        cfg = config_type(**filtered_kwargs)  # type: ignore[call-arg]
+        run = _main_runner_factory(runner_list)
+
+        return do_main_work(run, cfg)
+
     def do_main_work(run: Runner, cfg: AbstractConfig) -> int:
         verbose: int = getattr(cfg, "verbose", 0)
         logs: List[Log] = getattr(cfg, "logs", [])
@@ -120,35 +149,6 @@ def main_factory(
             return outer_main(argv)
 
         return inner_main
-
-    def main_run(argv: Sequence[str]) -> int:
-        assert run is not None
-
-        config_type = _get_run_cfg(run)
-        with dyn.clack_envvars_set(app_name, [config_type]):
-            cfg = config_type.from_cli_args(argv)
-
-        return do_main_work(run, cfg)
-
-    def main_runners(argv: Sequence[str]) -> int:
-        assert runners is not None
-        assert parser is not None
-
-        runner_list = list(runners)
-        all_config_types = _get_all_config_types(runner_list)
-
-        with dyn.clack_envvars_set(app_name, all_config_types):
-            parser_kwargs = parser(argv)
-
-        config_type = _config_type_from_command(
-            all_config_types, parser_kwargs["command"]
-        )
-
-        filtered_kwargs = filter_cli_kwargs(parser_kwargs)
-        cfg = config_type(**filtered_kwargs)  # type: ignore[call-arg]
-        run = _main_runner_factory(runner_list)
-
-        return do_main_work(run, cfg)
 
     if run is None:
         return wrap_main(main_runners)

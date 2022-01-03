@@ -126,16 +126,18 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     return parser
 
 
-def filter_cli_kwargs(
-    kwargs: argparse.Namespace | Mapping[str, Any]
+def filter_cli_args(
+    args: argparse.Namespace | Mapping[str, Any]
 ) -> dict[str, Any]:
-    """Filters kwargs produced by 'parser' passed into clack.main_factory().
+    """Filters args produced by 'parser' passed into clack.main_factory().
 
     Used to filter out argparse arguments which were NOT specified on the
     command-line.
     """
-    if isinstance(kwargs, argparse.Namespace):
-        kwargs = vars(kwargs)
+    if not isinstance(args, argparse.Namespace):
+        kwargs = args
+    else:
+        kwargs = vars(args)
 
     config_defaults = get_config_defaults()
 

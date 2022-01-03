@@ -10,7 +10,7 @@ from . import xdg
 from ._config import AbstractConfig, Config
 from ._helpers import NewCommand, comma_list_or_file, new_command_factory
 from ._main import MainType, main_factory
-from ._parser import Parser, filter_cli_kwargs
+from ._parser import Parser, filter_cli_args
 
 
 __all__ = [
@@ -20,7 +20,7 @@ __all__ = [
     "NewCommand",
     "Parser",
     "comma_list_or_file",
-    "filter_cli_kwargs",
+    "filter_cli_args",
     "main_factory",
     "new_command_factory",
     "xdg",

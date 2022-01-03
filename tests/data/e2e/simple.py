@@ -73,7 +73,7 @@ class Config(clack.Config):
         parser.add_argument("--baz", action="store_true")
 
         args = parser.parse_args(argv[1:])
-        kwargs = clack.filter_cli_kwargs(args)
+        kwargs = clack.filter_cli_args(args)
 
         return Config(**kwargs)
 
