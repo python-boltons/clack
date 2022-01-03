@@ -68,7 +68,7 @@ class FooConfig(Config):
     foo: str
 
 
-def parse_cli_args(argv: Sequence[str]) -> dict[str, Any]:
+def clack_parser(argv: Sequence[str]) -> dict[str, Any]:
     """Parse CLI arguments."""
     parser = clack.Parser()
     new_command = clack.new_command_factory(parser)
@@ -106,5 +106,5 @@ def run_foo(cfg: FooConfig) -> int:
 
 
 main = clack.main_factory(
-    "subcommands", runners=[run_bar, run_baz, run_foo], parser=parse_cli_args
+    "subcommands", runners=[run_bar, run_baz, run_foo], parser=clack_parser
 )
