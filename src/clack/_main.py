@@ -135,13 +135,6 @@ def main_factory(
         assert parser is not None
 
         runner_list = list(runners)
-        shared_cfg = _get_run_cfg(runner_list[0])
-
-        assert all(
-            _get_run_cfg(runner).mro()[0] is shared_cfg
-            for runner in runner_list[1:]
-        ), ASSERT_MAIN_RUNNERS_PRECOND
-
         parser_kwargs = parser(argv)
 
         all_config_types = _get_all_config_types(runner_list)
