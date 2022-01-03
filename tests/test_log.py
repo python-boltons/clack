@@ -8,9 +8,8 @@ from typing import Any, Callable, List, Literal, Union
 
 from _pytest.capture import CaptureFixture, CaptureResult
 import logrus
-from pytest import fixture, mark, param
+from pytest import mark, param
 from pytest_mock.plugin import MockerFixture
-import structlog
 from syrupy.assertion import SnapshotAssertion as Snapshot
 
 import clack

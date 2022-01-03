@@ -10,14 +10,14 @@ from contextlib import contextmanager
 from functools import lru_cache
 import json
 import os
-from typing import Any, Iterator, Type
+from typing import Any, Iterable, Iterator, Type
 
 from ._config import AbstractConfig
 
 
 @contextmanager
 def clack_envvars_set(
-    app_name: str, config_type: Type[AbstractConfig]
+    app_name: str, config_types: Iterable[Type[AbstractConfig]]
 ) -> Iterator[None]:
     """Context manager that sets temporary envvars.
 
@@ -25,7 +25,13 @@ def clack_envvars_set(
         - CLACK_APP_NAME
         - CLACK_CONFIG_DEFAULTS
     """
-    config_defaults = _config_defaults_from_config_type(config_type)
+    config_defaults = {}
+    for some_config_type in config_types:
+        some_config_defaults = _config_defaults_from_config_type(
+            some_config_type
+        )
+        config_defaults.update(some_config_defaults)
+
     os.environ["CLACK_APP_NAME"] = app_name
     os.environ["CLACK_CONFIG_DEFAULTS"] = json.dumps(config_defaults)
 

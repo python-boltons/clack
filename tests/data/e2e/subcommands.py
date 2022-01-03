@@ -62,7 +62,7 @@ def parse_cli_args(argv: Sequence[str]) -> dict[str, Any]:
     new_command = clack.new_command_factory(parser)
 
     bar_parser = new_command("bar", help="The 'bar' subcommand.")
-    bar_parser.add_argument("some_bar_arg", dest="bar", type=int)
+    bar_parser.add_argument("bar", type=int)
 
     baz_parser = new_command("baz", help="The 'baz' subcommand.")
     baz_parser.add_argument("--baz", action="store_true")

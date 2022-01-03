@@ -22,8 +22,8 @@ from typing import (
 from logrus import Log, Logger, init_logging
 from typist import literal_to_list
 
+from . import _dynvars as dyn
 from ._config import AbstractConfig, Config_T
-from ._dynvars import clack_envvars_set
 from ._parser import filter_cli_kwargs
 
 
@@ -125,7 +125,7 @@ def main_factory(
         assert run is not None
 
         config_type = _get_run_cfg(run)
-        with clack_envvars_set(app_name, config_type):
+        with dyn.clack_envvars_set(app_name, [config_type]):
             cfg = config_type.from_cli_args(argv)
 
         return do_main_work(run, cfg)
@@ -135,9 +135,11 @@ def main_factory(
         assert parser is not None
 
         runner_list = list(runners)
-        parser_kwargs = parser(argv)
-
         all_config_types = _get_all_config_types(runner_list)
+
+        with dyn.clack_envvars_set(app_name, all_config_types):
+            parser_kwargs = parser(argv)
+
         config_type = _config_type_from_command(
             all_config_types, parser_kwargs["command"]
         )
