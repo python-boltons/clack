@@ -50,7 +50,7 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     valid_log_formats = sorted(cast(List[str], literal_to_list(LogFormat)))
 
     parser = argparse.ArgumentParser(*args, **kwargs)
-    _patch_parser(parser)
+    monkey_patch_parser(parser)
 
     parser.add_argument(
         "-L",
@@ -151,7 +151,7 @@ def filter_cli_kwargs(
     return result
 
 
-def _patch_parser(parser: argparse.ArgumentParser) -> None:
+def monkey_patch_parser(parser: argparse.ArgumentParser) -> None:
     _patch_add_argument_method(parser)
 
 

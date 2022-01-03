@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 from typing import Any, List, Protocol
 
+from ._parser import monkey_patch_parser
+
 
 class NewCommand(Protocol):
     """Type of the function returned by `new_command_factory()`."""
@@ -48,13 +50,15 @@ def new_command_factory(
         help: str,  # pylint: disable=redefined-builtin
         **inner_kwargs: Any,
     ) -> argparse.ArgumentParser:
-        return subparsers.add_parser(
+        result = subparsers.add_parser(
             name,
             formatter_class=parser.formatter_class,
             help=help,
             description=help,
             **inner_kwargs,
         )
+        monkey_patch_parser(result)
+        return result
 
     return new_command
 

@@ -22,6 +22,12 @@ import clack
 # ARGS:     foo --foo FOO
 # OUTPUT:   foo=FOO
 
+# TEST CASE | Do envvars work?
+# ----------+--------------------------------
+# ARGS:     foo
+# ENV:      FOO=KUNGFOO
+# OUTPUT:   foo=KUNGFOO
+
 
 BarCommand = Literal["bar"]
 BazCommand = Literal["baz"]
