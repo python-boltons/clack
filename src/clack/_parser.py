@@ -152,6 +152,7 @@ def filter_cli_kwargs(
 
 
 def monkey_patch_parser(parser: argparse.ArgumentParser) -> None:
+    """Tweeks ArgumentParser a bit so it works better with clack."""
     _patch_add_argument_method(parser)
 
 
