@@ -12,6 +12,16 @@ import clack
 # ARGS:     bar 5
 # OUTPUT:   bar=5
 
+# TEST CASE | Basic test of 'baz' subcommand.
+# ----------+--------------------------------
+# ARGS:     baz --baz
+# OUTPUT:   baz=True
+
+# TEST CASE | Basic test of 'foo' subcommand.
+# ----------+--------------------------------
+# ARGS:     foo --foo FOO
+# OUTPUT:   foo=FOO
+
 
 BarCommand = Literal["bar"]
 BazCommand = Literal["baz"]
