@@ -80,18 +80,6 @@ class Config(BaseSettings):
                 _config_settings_factory(app_name),
             )
 
-    @classmethod
-    def from_cli_args(cls: Type[Config_T], argv: Sequence[str]) -> Config_T:
-        """Parses command-line arguments."""
-        import clack
-
-        parser = clack.Parser()
-
-        args = parser.parse_args(argv[1:])
-        kwargs = clack.filter_cli_args(args)
-
-        return cls(**kwargs)  # type: ignore[call-arg]
-
 
 def _config_settings_factory(app_name: str) -> _SettingsSource:
     """Configuration Settings Factory Function
