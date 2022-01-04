@@ -156,9 +156,7 @@ def main_factory(
         return wrap_main(main_run)
 
 
-def _main_runner_factory(
-    runners: Sequence[Runner],
-) -> Callable[[Config_T], int]:
+def _main_runner_factory(runners: Sequence[Runner]) -> Runner:
     def run(cfg: Any) -> int:
         for run in runners:
             run_config_type = _get_run_cfg(run)
