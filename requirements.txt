@@ -10,7 +10,7 @@ bolton-metaman==0.1.1
     # via bolton-logrus
 bolton-typist==0.1.1
     # via -r requirements.in
-pydantic==1.8.2
+pydantic==1.9.0
     # via -r requirements.in
 pyyaml==6.0
     # via -r requirements.in
