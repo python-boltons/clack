@@ -140,7 +140,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         """The pydantic.BaseSettings source callable that we will return."""
         del settings
 
-        ##### helper variables used by mutex groups...
+        ##### Helper variables used by MutexConfigGroup objects...
         app_path = Path(app_name)
         base_xdg_dir = xdg.get_base_dir("config")
         clack_xdg_dir = base_xdg_dir / "clack"
@@ -148,7 +148,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         full_xdg_dir = xdg.get_full_dir("config", app_name)
         hidden_app_path = Path("." + app_name)
 
-        ##### MutexConfigGroup variable definitions.
+        ##### MutexConfigGroup variable definitions...
         # user config files used by ALL clack apps
         #
         # e.g. ~/.config/clack/global.yml OR ~/.config/clack/apps/all.yml...
@@ -179,7 +179,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
             all_yamls(hidden_app_path / "config"),
         )
 
-        ##### Populate and then return dict of configuration values.
+        ##### Populate and then return dict of configuration values...
         result: Dict[str, Any] = {}
 
         # Fill the `result` configuration mapping by calling the
