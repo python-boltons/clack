@@ -9,9 +9,26 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.1.3...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.2.0...HEAD)
 
 No notable changes have been made.
+
+
+## [0.2.0](https://github.com/python-boltons/clack/compare/0.1.3...0.2.0) - 2022-01-04
+
+### Added
+
+* Ability to load `Config()` class values from environment variables.
+* Ability to load `Config()` class values from YAML configuration files.
+
+### Changed
+
+* *BREAKING CHANGE*: The signature of the `clack.main_factory()` function has
+  been changed.
+
+### Miscellaneous
+
+* Increased test coverage to >=80%.
 
 
 ## [0.1.3](https://github.com/python-boltons/clack/compare/0.1.2...0.1.3) - 2021-12-26
