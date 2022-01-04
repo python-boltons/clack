@@ -10,7 +10,7 @@ import clack
 # TEST | Basic test of 'bar' subcommand.
 # --------------------------------------
 # ARGS:     bar 5
-# OUTPUT:   bar=5
+# OUTPUT:   bar=5, barbar=BARBAR
 
 # TEST | Basic test of 'baz' subcommand.
 # --------------------------------------
@@ -27,6 +27,11 @@ import clack
 # ARGS:     foo
 # ENV:      FOO=KUNGFOO
 # OUTPUT:   foo=KUNGFOO
+
+# TEST | Do envvars override defaults?
+# ------------------------------------
+# ARGS:     bar --bar=foobar 5
+# OUTPUT:   bar=5, barbar=foobar
 
 # TEST | Does a config file work?
 # -------------------------------
@@ -51,6 +56,7 @@ class BarConfig(Config):
     """The 'bar' subcommand's configuration."""
 
     bar: int
+    barbar: str = "BARBAR"
     command: BarCommand
 
 
@@ -75,6 +81,7 @@ def clack_parser(argv: Sequence[str]) -> dict[str, Any]:
 
     bar_parser = new_command("bar", help="The 'bar' subcommand.")
     bar_parser.add_argument("bar", type=int)
+    bar_parser.add_argument("--bar", dest="barbar")
 
     baz_parser = new_command("baz", help="The 'baz' subcommand.")
     baz_parser.add_argument("--baz", action="store_true")
@@ -89,7 +96,7 @@ def clack_parser(argv: Sequence[str]) -> dict[str, Any]:
 
 def run_bar(cfg: BarConfig) -> int:
     """Runner function."""
-    print(f"bar={cfg.bar}")
+    print(f"bar={cfg.bar}, barbar={cfg.barbar}")
     return 0
 
 
