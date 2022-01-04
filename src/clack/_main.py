@@ -83,8 +83,6 @@ def main_factory(
 
     assert run_is_set or kwargs_only, ASSERT_MAIN_FACTORY_PRECOND
     assert not (run_is_set and kwargs_only), ASSERT_MAIN_FACTORY_PRECOND
-    assert runners is not None or parser is None, ASSERT_MAIN_FACTORY_PRECOND
-    assert parser is not None or runners is None, ASSERT_MAIN_FACTORY_PRECOND
 
     def main_run(argv: Sequence[str]) -> int:
         assert run is not None
