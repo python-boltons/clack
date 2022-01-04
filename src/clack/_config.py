@@ -125,9 +125,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
             """
             for config_path in self.config_paths:
                 if config_path.is_file():
-                    yaml_dict = yaml.load(
-                        config_path.read_bytes(), yaml.SafeLoader
-                    )
+                    yaml_dict = yaml.safe_load(config_path.read_bytes())
                     mut_config_map.update(yaml_dict)
                     break
 
