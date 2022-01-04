@@ -33,7 +33,7 @@ CLI_ARGS_MARK: Final = "ARGS"
 CONFIG_MARK: Final = "CONFIG"
 ENV_MARK: Final = "ENV"
 OUTPUT_MARK: Final = "OUTPUT"
-START_MARK_PREFIX: Final = "# TEST CASE |"
+START_MARK_PREFIX: Final = "# TEST |"
 
 
 class Case(NamedTuple):

@@ -7,29 +7,29 @@ from typing import Any, Literal, Sequence
 import clack
 
 
-# TEST CASE | Basic test of 'bar' subcommand.
-# ----------+--------------------------------
+# TEST | Basic test of 'bar' subcommand.
+# --------------------------------------
 # ARGS:     bar 5
 # OUTPUT:   bar=5
 
-# TEST CASE | Basic test of 'baz' subcommand.
-# ----------+--------------------------------
+# TEST | Basic test of 'baz' subcommand.
+# --------------------------------------
 # ARGS:     baz --baz
 # OUTPUT:   baz=True
 
-# TEST CASE | Basic test of 'foo' subcommand.
-# ----------+--------------------------------
+# TEST | Basic test of 'foo' subcommand.
+# --------------------------------------
 # ARGS:     foo --foo FOO
 # OUTPUT:   foo=FOO
 
-# TEST CASE | Do envvars work?
-# ----------+--------------------------------
+# TEST | Do envvars work?
+# -----------------------
 # ARGS:     foo
 # ENV:      FOO=KUNGFOO
 # OUTPUT:   foo=KUNGFOO
 
-# TEST CASE | Does a config file work?
-# ----------+--------------------------------
+# TEST | Does a config file work?
+# -------------------------------
 # ARGS:     foo
 # CONFIG:   subcommands.yml {"foo": "FOOCONF"}
 # OUTPUT:   foo=FOOCONF
