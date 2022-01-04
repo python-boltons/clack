@@ -10,7 +10,7 @@ from .shared import Config
 
 def test_new_command_factory() -> None:
     """Test the clack.new_command_factory() function."""
-    with dyn.clack_envvars_set("test_clack", [Config]):
+    with dyn.clack_envvars_set("test_clack", [Config]):  # type: ignore[list-item]
         parser = clack.Parser()
 
     new_command = clack.new_command_factory(parser, dest="command")
@@ -25,7 +25,7 @@ def test_new_command_factory() -> None:
 
 def test_config_is_immutable() -> None:
     """Test that the Config object's attributes are immutable."""
-    with dyn.clack_envvars_set("test_clack", [Config]):
+    with dyn.clack_envvars_set("test_clack", [Config]):  # type: ignore[list-item]
         cfg = Config.from_cli_args(["", "--do-stuff"])
         assert cfg.do_stuff
 
