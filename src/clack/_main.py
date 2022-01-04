@@ -111,7 +111,7 @@ def main_factory(
 
         filtered_kwargs = filter_cli_args(parser_kwargs)
         cfg = config_type(**filtered_kwargs)  # type: ignore[call-arg]
-        run = _main_runner_factory(runner_list)
+        run = _main_runner_factory(runners)
 
         return do_main_work(run, cfg)
 
@@ -157,7 +157,7 @@ def main_factory(
         return wrap_main(main_run)
 
 
-def _main_runner_factory(runners: Sequence[Runner]) -> Runner:
+def _main_runner_factory(runners: Iterable[Runner]) -> Runner:
     def run(cfg: Any) -> int:
         for run in runners:
             run_config_type = _get_run_cfg(run)
