@@ -12,6 +12,11 @@ import clack
 # ARGS:     bar 5
 # OUTPUT:   bar=5, barbar=BARBAR
 
+# TEST | Slightly more complicated 'bar' test.
+# --------------------------------------------
+# ARGS:     bar --bar=foobar 5
+# OUTPUT:   bar=5, barbar=foobar
+
 # TEST | Basic test of 'baz' subcommand.
 # --------------------------------------
 # ARGS:     baz --baz
@@ -30,7 +35,8 @@ import clack
 
 # TEST | Do envvars override defaults?
 # ------------------------------------
-# ARGS:     bar --bar=foobar 5
+# ARGS:     bar 5
+# ENV:      BARBAR=foobar
 # OUTPUT:   bar=5, barbar=foobar
 
 # TEST | Does a config file work?
@@ -38,6 +44,13 @@ import clack
 # ARGS:     foo
 # CONFIG:   subcommands.yml {"foo": "FOOCONF"}
 # OUTPUT:   foo=FOOCONF
+
+# TEST | Do envvars override config files?
+# ----------------------------------------
+# ARGS:     foo
+# CONFIG:   subcommands.yml {"foo": "FOOCONF"}
+# ENV:      FOO=FOOENV
+# OUTPUT:   foo=FOOENV
 
 
 BarCommand = Literal["bar"]
