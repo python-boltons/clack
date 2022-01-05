@@ -113,7 +113,7 @@ def main_factory(
 
         return do_main_work(run, cfg)
 
-    def do_main_work(run: Runner, cfg: AbstractConfig) -> int:
+    def do_main_work(runner: Runner, cfg: AbstractConfig) -> int:
         verbose: int = getattr(cfg, "verbose", 0)
         logs: List[Log] = getattr(cfg, "logs", [])
 
@@ -128,7 +128,7 @@ def main_factory(
         logger.debug("DEBUG level logging enabled.")
 
         try:
-            status = run(cfg)
+            status = runner(cfg)
         except KeyboardInterrupt:  # pragma: no cover
             logger.info("Received SIGINT signal. Terminating script...")
             return 128 + signal.SIGINT.value
