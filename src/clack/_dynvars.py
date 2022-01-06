@@ -11,9 +11,12 @@ from contextlib import contextmanager
 from functools import lru_cache
 import os
 import pickle
-from typing import Any, Iterable, Iterator, Type
+from typing import Any, Final, Iterable, Iterator, Type
 
 from ._config import AbstractConfig
+
+
+_CODECS_ENCODING: Final = "base64"
 
 
 @contextmanager
@@ -35,7 +38,7 @@ def clack_envvars_set(
 
     os.environ["CLACK_APP_NAME"] = app_name
     os.environ["CLACK_CONFIG_DEFAULTS"] = codecs.encode(
-        pickle.dumps(config_defaults), "base64"
+        pickle.dumps(config_defaults), _CODECS_ENCODING
     ).decode()
 
     yield
@@ -86,6 +89,6 @@ def get_config_defaults() -> dict[str, Any]:
         ) from e
     else:
         result: dict[str, Any] = pickle.loads(
-            codecs.decode(config_defaults_string.encode(), "base64")
+            codecs.decode(config_defaults_string.encode(), _CODECS_ENCODING)
         )
         return result
