@@ -6,10 +6,11 @@ variables IMO.
 
 from __future__ import annotations
 
+import codecs
 from contextlib import contextmanager
 from functools import lru_cache
-import json
 import os
+import pickle
 from typing import Any, Iterable, Iterator, Type
 
 from ._config import AbstractConfig
@@ -33,7 +34,9 @@ def clack_envvars_set(
         config_defaults.update(some_config_defaults)
 
     os.environ["CLACK_APP_NAME"] = app_name
-    os.environ["CLACK_CONFIG_DEFAULTS"] = json.dumps(config_defaults)
+    os.environ["CLACK_CONFIG_DEFAULTS"] = codecs.encode(
+        pickle.dumps(config_defaults), "base64"
+    ).decode()
 
     yield
 
@@ -82,5 +85,7 @@ def get_config_defaults() -> dict[str, Any]:
             " context that clack_envvars_set() creates."
         ) from e
     else:
-        result: dict[str, Any] = json.loads(config_defaults_string)
+        result: dict[str, Any] = pickle.loads(
+            codecs.decode(config_defaults_string.encode(), "base64")
+        )
         return result
