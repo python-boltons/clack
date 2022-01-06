@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any, Literal, Sequence
 
 import clack
@@ -25,13 +26,13 @@ import clack
 # TEST | Basic test of 'foo' subcommand.
 # --------------------------------------
 # ARGS:     foo --foo FOO
-# OUTPUT:   foo=FOO
+# OUTPUT:   foo=FOO foo_txt=foo.txt
 
 # TEST | Do envvars work?
 # -----------------------
 # ARGS:     foo
 # ENV:      FOO=KUNGFOO
-# OUTPUT:   foo=KUNGFOO
+# OUTPUT:   foo=KUNGFOO foo_txt=foo.txt
 
 # TEST | Do envvars override defaults?
 # ------------------------------------
@@ -43,14 +44,14 @@ import clack
 # -------------------------------
 # ARGS:     foo
 # CONFIG:   subcommands.yml {"foo": "FOOCONF"}
-# OUTPUT:   foo=FOOCONF
+# OUTPUT:   foo=FOOCONF foo_txt=foo.txt
 
 # TEST | Do envvars override config files?
 # ----------------------------------------
 # ARGS:     foo
 # CONFIG:   subcommands.yml {"foo": "FOOCONF"}
 # ENV:      FOO=FOOENV
-# OUTPUT:   foo=FOOENV
+# OUTPUT:   foo=FOOENV foo_txt=foo.txt
 
 
 BarCommand = Literal["bar"]
@@ -85,6 +86,7 @@ class FooConfig(Config):
 
     command: FooCommand
     foo: str
+    foo_txt: Path = Path("foo.txt")
 
 
 def clack_parser(argv: Sequence[str]) -> dict[str, Any]:
@@ -101,6 +103,7 @@ def clack_parser(argv: Sequence[str]) -> dict[str, Any]:
 
     foo_parser = new_command("foo", help="The 'foo' subcommand.")
     foo_parser.add_argument("--foo")
+    foo_parser.add_argument("--foo-txt", dest="foo_txt", type=Path)
 
     args = parser.parse_args(argv[1:])
 
@@ -121,7 +124,7 @@ def run_baz(cfg: BazConfig) -> int:
 
 def run_foo(cfg: FooConfig) -> int:
     """Runner function."""
-    print(f"foo={cfg.foo}")
+    print(f"foo={cfg.foo} foo_txt={cfg.foo_txt}")
     return 0
 
 
