@@ -59,6 +59,7 @@ class Config(BaseSettings):
         """Pydantic BaseSettings Configuration."""
 
         allow_mutation = False
+        extra = "ignore"
 
         @classmethod
         def customise_sources(

@@ -53,6 +53,11 @@ import clack
 # ENV:      FOO=FOOENV
 # OUTPUT:   foo=FOOENV foo_txt=foo.txt
 
+# TEST | Are unknown options ignored?
+# -----------------------------------
+# ARGS:     foo --foo FOO --ignored
+# OUTPUT:   foo=FOO foo_txt=foo.txt
+
 
 BarCommand = Literal["bar"]
 BazCommand = Literal["baz"]
@@ -104,6 +109,7 @@ def clack_parser(argv: Sequence[str]) -> dict[str, Any]:
     foo_parser = new_command("foo", help="The 'foo' subcommand.")
     foo_parser.add_argument("--foo")
     foo_parser.add_argument("--foo-txt", dest="foo_txt", type=Path)
+    foo_parser.add_argument("--ignored", action="store_true")
 
     args = parser.parse_args(argv[1:])
 
