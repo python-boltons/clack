@@ -160,7 +160,7 @@ def _config_settings_factory() -> _SettingsSource:
             return config_settings_from_config_file(config_file)
 
     def config_settings_from_app_name(app_name: str) -> Dict[str, Any]:
-        """The pydantic.BaseSettings source callable that we will return.
+        """Load settings from multiple configuration files based on `app_name`.
 
         NOTE:
             This function is only used when a user has NOT specified an
@@ -221,7 +221,7 @@ def _config_settings_factory() -> _SettingsSource:
         return result
 
     def config_settings_from_config_file(config_file: Path) -> Dict[str, Any]:
-        """The pydantic.BaseSettings source callable that we will return.
+        """Load settings from a single configuration file.
 
         NOTE:
             This function is only used when a user has specified an explicit
