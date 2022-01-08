@@ -89,7 +89,7 @@ def main_factory(
     def main_run(argv: Sequence[str]) -> int:
         assert run is not None
 
-        config_file = _get_config_file(argv)
+        config_file = _get_config_file_from_argv(argv)
         config_type = _get_run_cfg(run)
         with dyn.clack_envvars_set(
             app_name, [config_type], config_file=config_file
@@ -105,7 +105,7 @@ def main_factory(
         runner_list = list(runners)
         all_config_types = _get_all_config_types(runner_list)
 
-        config_file = _get_config_file(argv)
+        config_file = _get_config_file_from_argv(argv)
         with dyn.clack_envvars_set(
             app_name, all_config_types, config_file=config_file
         ):
@@ -163,15 +163,14 @@ def main_factory(
         return wrap_main(main_run)
 
 
-def _get_config_file(argv: Sequence[str]) -> Optional[Path]:
+def _get_config_file_from_argv(argv: Sequence[str]) -> Optional[Path]:
     for opt in ["-c", "--config"]:
-        if opt in argv:
-            idx = argv.index(opt)
-            return Path(argv[idx + 1])
+        for idx, argv_opt in enumerate(argv):
+            if opt == argv_opt:
+                return Path(argv[idx + 1])
 
-        for argv_opt in argv:
-            if opt in argv_opt:
-                cfg_fname = argv_opt.replace(opt, "").lstrip("=")
+            if argv_opt.startswith(opt):
+                cfg_fname = argv_opt[len(opt) :].lstrip("=")
                 return Path(cfg_fname)
 
     return None
