@@ -25,6 +25,7 @@ from typist import PathLike
 import yaml
 
 from . import xdg
+from ._config_file import ConfigFile, YAMLConfigFile
 
 
 Config_T = TypeVar("Config_T", bound="AbstractConfig")
@@ -53,7 +54,7 @@ class AbstractConfig(Protocol[co_Config_T]):
 class Config(BaseSettings):
     """Default CLI arguments / app configuration."""
 
-    config_file: Optional[Path] = None
+    config_file: Optional[ConfigFile] = None
     logs: List[Log] = []
     verbose: int = 0
 
@@ -88,11 +89,13 @@ class Config(BaseSettings):
             return (
                 init_settings,
                 env_settings,
-                _config_settings_factory(),
+                _config_settings_factory(YAMLConfigFile),
             )
 
 
-def _config_settings_factory() -> _SettingsSource:
+def _config_settings_factory(
+    config_file_type: Type[ConfigFile],
+) -> _SettingsSource:
     """Configuration Settings Factory Function
 
     Factory function that returns a pydantic.BaseSettings source callable that
@@ -141,7 +144,9 @@ def _config_settings_factory() -> _SettingsSource:
                     mut_config_map.update(yaml_dict)
 
                     if self.set_config_file:
-                        mut_config_map["config_file"] = config_path
+                        mut_config_map["config_file"] = config_file_type(
+                            config_path
+                        )
 
                     break
 

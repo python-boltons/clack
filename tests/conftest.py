@@ -11,7 +11,7 @@ from pytest import fixture
 import structlog
 
 
-pytest_plugins = ["logrus.pytest_plugin"]
+pytest_plugins = ["clack.pytest_plugin", "logrus.pytest_plugin"]
 
 
 @fixture(autouse=True, scope="session")

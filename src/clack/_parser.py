@@ -23,6 +23,7 @@ from typing import (
 from logrus import Log, LogFormat, LogLevel, get_default_logfile
 from typist import literal_to_list
 
+from ._config_file import YAMLConfigFile
 from ._dynvars import get_app_name, get_config_defaults
 
 
@@ -31,6 +32,7 @@ _ARGPARSE_ARGUMENT_DEFAULT = object()
 
 def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     """Wrapper for argparse.ArgumentParser."""
+
     app_name = get_app_name()
 
     stack = list(inspect.stack())
@@ -56,7 +58,7 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
         "-c",
         "--config",
         dest="config_file",
-        type=Path,
+        type=YAMLConfigFile,
         help=(
             "Absolute or relative path to a YAML file that contains this"
             " application's configuration."

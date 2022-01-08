@@ -7,6 +7,8 @@ from typing import Optional, Sequence
 import clack
 
 
+# pylint: disable=line-too-long
+
 # TEST | Basic CLI opts and config class attribute defaults work.
 # ---------------------------------------------------------------
 # ARGS:     --foo=KUNG -B2
@@ -84,7 +86,7 @@ import clack
 # ARGS:     --baz --show-config
 # CONFIG:   .simple/config.yml {"foo": "LocalFoo"}
 # CONFIG:   XDG/simple.yml {"foo": "UserFoo", "bar": "456"}
-# OUTPUT:   foo=LocalFoo bar=456 baz=True config=.simple/config.yml
+# OUTPUT:   foo=LocalFoo bar=456 baz=True config=YAMLConfigFile(.simple/config.yml)
 
 
 class Config(clack.Config):

@@ -9,9 +9,17 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.2.5...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.2.6...HEAD)
 
 No notable changes have been made.
+
+
+## [0.2.6](https://github.com/python-boltons/clack/compare/0.2.5...0.2.6) - 2022-01-08
+
+### Added
+
+* Add `clack.ConfigFile` class (the new default for the `--config` option).
+* Add `clack.pytest_plugin` that includes `make_config_file()` fixture.
 
 
 ## [0.2.5](https://github.com/python-boltons/clack/compare/0.2.4...0.2.5) - 2022-01-08
