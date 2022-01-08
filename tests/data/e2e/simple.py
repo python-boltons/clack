@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Sequence
+from typing import Optional, Sequence
 
 import clack
 
@@ -64,6 +64,13 @@ import clack
 # CONFIG:   XDG/simple.yml {"foo": "UserFoo", "bar": "456"}
 # OUTPUT:   foo=CustomFoo bar=987 baz=True
 
+# TEST | Regression Test: Don't parse '-c' from other options.
+# -----------------------------------------------------------------
+# ARGS:     --baz --cheese=cheddar
+# CONFIG:   .simple/config.yml {"foo": "LocalFoo"}
+# CONFIG:   XDG/simple.yml {"foo": "UserFoo", "bar": "456"}
+# OUTPUT:   foo=LocalFoo bar=456 baz=True cheese=cheddar
+
 
 class Config(clack.Config):
     """Application Config."""
@@ -71,6 +78,7 @@ class Config(clack.Config):
     foo: str = "FOO"
     bar: int
     baz: bool = False
+    cheese: Optional[str] = None
 
     @classmethod
     def from_cli_args(cls, argv: Sequence[str]) -> Config:
@@ -79,6 +87,7 @@ class Config(clack.Config):
         parser.add_argument("-f", "--foo")
         parser.add_argument("-B", "--some-bar", dest="bar", type=int)
         parser.add_argument("--baz", action="store_true")
+        parser.add_argument("--cheese")
 
         args = parser.parse_args(argv[1:])
         kwargs = clack.filter_cli_args(args)
@@ -88,7 +97,10 @@ class Config(clack.Config):
 
 def run(cfg: Config) -> int:
     """Runner function."""
-    print(f"foo={cfg.foo} bar={cfg.bar} baz={cfg.baz}")
+    output = f"foo={cfg.foo} bar={cfg.bar} baz={cfg.baz}"
+    if cfg.cheese is not None:
+        output += f" cheese={cfg.cheese}"
+    print(output)
     return 0
 
 
