@@ -5,14 +5,14 @@ from __future__ import annotations
 from pathlib import Path
 import shutil
 from types import ModuleType
-from typing import List
+from typing import List, Type
 
 from _pytest.capture import CaptureFixture
 from _pytest.tmpdir import TempPathFactory
 from logrus import Logger
 from pytest import mark
 
-from clack import MainType
+from clack import ConfigFile, MainType, YAMLConfigFile
 
 from .data.e2e import e2e_test_mods
 from .e2e_helpers import (
@@ -29,10 +29,12 @@ params = mark.parametrize
 
 
 @params("mod", e2e_test_mods)
+@params("config_file_type", [YAMLConfigFile])
 def test_end_to_end(
     tmp_path_factory: TempPathFactory,
     capsys: CaptureFixture,
     mod: ModuleType,
+    config_file_type: Type[ConfigFile],
 ) -> None:
     """Tests the mini-applications defined in tests/data/e2e."""
     log = logger.bind(mod=mod)
@@ -53,17 +55,19 @@ def test_end_to_end(
         with dir_context(tmp_path), envvars_set(
             dict(XDG_CONFIG_HOME=str(tmp_xdg_config))
         ):
-            case = Case.from_comment_lines(mod_name, comment_lines)
-            log.info("New test case.", case=case)
+            test_case = Case.from_comment_lines(
+                config_file_type, mod_name, comment_lines
+            )
+            log.info("New test case.", test_case=test_case)
 
             main: MainType = getattr(mod, "main")
-            with envvars_set(case.env):
-                ec = main([mod_name] + case.cli_args)
+            with envvars_set(test_case.env):
+                ec = main([mod_name] + test_case.cli_args)
 
             assert ec == 0
 
             capture = capsys.readouterr()
-            assert capture.out.strip() == case.output
+            assert capture.out.strip() == test_case.output
 
         shutil.rmtree(tmp_path)
 
@@ -83,5 +87,5 @@ def test_from_comment_lines(
 ) -> None:
     """Tests the Case.from_comment_lines() constructor method."""
     lines = [START_MARK_PREFIX + f" {name}"] + lines
-    actual = Case.from_comment_lines("test_e2e", lines)
+    actual = Case.from_comment_lines(YAMLConfigFile, "test_e2e", lines)
     assert actual == expected

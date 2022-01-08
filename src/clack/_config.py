@@ -15,6 +15,7 @@ from typing import (
     Tuple,
     Type,
     TypeVar,
+    Union,
     runtime_checkable,
 )
 
@@ -22,7 +23,6 @@ from logrus import Log
 from pydantic import BaseSettings
 from pydantic.fields import ModelField
 from typist import PathLike
-import yaml
 
 from . import xdg
 from ._config_file import ConfigFile, YAMLConfigFile
@@ -116,7 +116,9 @@ def _config_settings_factory(
 
         @classmethod
         def from_path_lists(
-            cls, *path_like_lists: List[PathLike], set_config_file: bool = True
+            cls,
+            *path_like_lists: Union[List[Path], List[str]],
+            set_config_file: bool = True
         ) -> "MutexConfigGroup":
             """MutexConfigGroup class constructor.
 
@@ -140,20 +142,19 @@ def _config_settings_factory(
             """
             for config_path in self.config_paths:
                 if config_path.is_file():
-                    yaml_dict = yaml.safe_load(config_path.read_bytes())
-                    mut_config_map.update(yaml_dict)
+                    config_file = config_file_type(config_path)
+                    config_dict = config_file.to_dict().unwrap()
+                    mut_config_map.update(config_dict)
 
                     if self.set_config_file:
-                        mut_config_map["config_file"] = config_file_type(
-                            config_path
-                        )
+                        mut_config_map["config_file"] = config_file
 
                     break
 
-    def all_yamls(name: PathLike) -> List[PathLike]:
-        """Helper function that adds support for all YAML filename exts."""
+    def all_extensions(name: PathLike) -> List[str]:
+        """Helper function that adds support for all config filename exts."""
         name = str(name)
-        return [name + ".yml", name + ".yaml"]
+        return [name + "." + ext for ext in config_file_type.extensions]
 
     def config_settings(settings: BaseSettings) -> Dict[str, Any]:
         """The pydantic.BaseSettings source callable that we will return."""
@@ -193,8 +194,8 @@ def _config_settings_factory(
         #
         # e.g. ~/.config/clack/global.yml OR ~/.config/clack/apps/all.yml...
         user_group_for_all_apps = MutexConfigGroup.from_path_lists(
-            all_yamls(clack_xdg_dir / "global"),
-            all_yamls(clack_apps_dir / "all"),
+            all_extensions(clack_xdg_dir / "global"),
+            all_extensions(clack_apps_dir / "all"),
             set_config_file=False,
         )
 
@@ -203,9 +204,9 @@ def _config_settings_factory(
         # e.g. ~/.config/APP/APP.yml OR ~/.config/APP/config.yml OR
         #      ~/.config/clack/apps/APP.yml...
         user_group_for_this_app = MutexConfigGroup.from_path_lists(
-            all_yamls(full_xdg_dir / app_name),
-            all_yamls(full_xdg_dir / "config"),
-            all_yamls(clack_apps_dir / app_name),
+            all_extensions(full_xdg_dir / app_name),
+            all_extensions(full_xdg_dir / "config"),
+            all_extensions(clack_apps_dir / app_name),
         )
 
         # app-specific config files that are local to the CWD
@@ -213,11 +214,11 @@ def _config_settings_factory(
         # e.g. ./APP.yml OR ./APP.yaml OR ./APP/APP.yml OR ./APP/config.yaml OR
         #      ./.APP/APP.yaml OR ./.APP/config.yml...
         local_group_for_this_app = MutexConfigGroup.from_path_lists(
-            all_yamls(app_name),
-            all_yamls(app_path / app_name),
-            all_yamls(app_path / "config"),
-            all_yamls(hidden_app_path / app_name),
-            all_yamls(hidden_app_path / "config"),
+            all_extensions(app_name),
+            all_extensions(app_path / app_name),
+            all_extensions(app_path / "config"),
+            all_extensions(hidden_app_path / app_name),
+            all_extensions(hidden_app_path / "config"),
         )
 
         ##### Populate and then return dict of configuration values...

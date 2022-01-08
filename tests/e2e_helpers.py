@@ -17,14 +17,14 @@ from typing import (
     Optional,
     Sequence,
     Tuple,
+    Type,
     cast,
 )
 
 from logrus import Logger
 from typist import PathLike
-import yaml
 
-from clack import xdg
+from clack import ConfigFile, xdg
 
 
 logger = Logger(__name__)
@@ -48,7 +48,12 @@ class Case(NamedTuple):
     env: Optional[Dict[str, str]]
 
     @classmethod
-    def from_comment_lines(cls, app_name: str, lines: Sequence[str]) -> Case:
+    def from_comment_lines(
+        cls,
+        config_file_type: Type[ConfigFile],
+        app_name: str,
+        lines: Sequence[str],
+    ) -> Case:
         """Constructs a Case object from a single test case's comment lines."""
         log = logger.bind_fargs(locals())
 
@@ -87,12 +92,10 @@ class Case(NamedTuple):
                 filename = filename.replace(
                     "XDG", str(xdg.get_full_dir("config", app_name))
                 )
-                json_config = json.loads(json_data)
+                config_dict = json.loads(json_data)
 
-                filepath = Path(filename)
-                filepath.parent.mkdir(parents=True, exist_ok=True)
-                with filepath.open("w+") as f:
-                    yaml.dump(json_config, f, allow_unicode=True)
+                path = Path(filename)
+                config_file_type.new(path, **config_dict)
             else:
                 log.warning("Unrecognized key.", key=key, value=value)
 

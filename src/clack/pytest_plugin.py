@@ -11,10 +11,10 @@ Examples:
 """
 
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any, Protocol, Type
 
+from _pytest.fixtures import SubRequest
 from pytest import fixture
-import yaml
 
 from ._config_file import ConfigFile, YAMLConfigFile
 
@@ -26,8 +26,10 @@ class MakeConfigFile(Protocol):
         """Captures the `make_config_file()` function's signature."""
 
 
-@fixture(name="make_config_file")
-def make_config_file_fixture(tmp_path: Path) -> MakeConfigFile:
+@fixture(name="make_config_file", params=[YAMLConfigFile])
+def make_config_file_fixture(
+    request: SubRequest, tmp_path: Path
+) -> MakeConfigFile:
     """Returns a function that can be used to generate ConfigFile objects.
 
     The associated config file is first instantiated using the 'kwargs'
@@ -35,15 +37,10 @@ def make_config_file_fixture(tmp_path: Path) -> MakeConfigFile:
     """
 
     def make_config_file(basename: str, **kwargs: Any) -> ConfigFile:
-        config_dict = dict(**kwargs)
-
         path = tmp_path / basename
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Initialize config file...
-        with path.open("w+") as f:
-            yaml.dump(config_dict, f, allow_unicode=True)
-
-        return YAMLConfigFile(path)
+        config_file_type: Type[ConfigFile] = request.param
+        return config_file_type.new(path, **kwargs)
 
     return make_config_file

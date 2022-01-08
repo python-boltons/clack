@@ -3,22 +3,34 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, Protocol, runtime_checkable
+from typing import Any, Dict, List, Protocol, Type, TypeVar, runtime_checkable
 
 from eris import ErisError, Err, Ok, Result
 from typist import PathLike
 import yaml
 
 
+ConfigFile_T = TypeVar("ConfigFile_T", bound="ConfigFile")
+
+
 @runtime_checkable
 class ConfigFile(Protocol):
     """The protocol used for configuration file classes."""
+
+    # All possible filename extensions for this type of config file.
+    extensions: List[str]
 
     def __init__(self, path: PathLike) -> None:
         pass
 
     def get(self, key: str) -> Result[Any, ErisError]:
         """Getter for values in this config file."""
+
+    @classmethod
+    def new(
+        cls: Type[ConfigFile_T], path: PathLike, **kwargs: Any
+    ) -> ConfigFile_T:
+        """Construct a new ConfigFile object."""
 
     def set(
         self, key: str, value: Any, *, allow_new: bool = False
@@ -35,6 +47,8 @@ class YAMLConfigFile:
     This class is useful as a way to conveniently get/set configuration values
     in/to your current application's config file.
     """
+
+    extensions = ["yml", "yaml"]
 
     def __init__(self, path: PathLike) -> None:
         self.path = Path(path)
@@ -66,6 +80,20 @@ class YAMLConfigFile:
                 f" file: key={key} config_dict={config_dict} self={self}"
             )
             return err.chain(e)
+
+    @classmethod
+    def new(cls, path: PathLike, **kwargs: Any) -> YAMLConfigFile:
+        """Construct a new YAMLConfigFile object."""
+        config_dict = dict(**kwargs)
+
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Initialize config file...
+        with path.open("w+") as f:
+            yaml.dump(config_dict, f, allow_unicode=True)
+
+        return cls(path)
 
     def set(
         self, key: str, value: Any, *, allow_new: bool = False

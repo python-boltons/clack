@@ -9,9 +9,16 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.2.6...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.2.7...HEAD)
 
 No notable changes have been made.
+
+
+## [0.2.7](https://github.com/python-boltons/clack/compare/0.2.6...0.2.7) - 2022-01-08
+
+### Miscellaneous
+
+* Abstract away all YAML logic to `ConfigFile` Protocol.
 
 
 ## [0.2.6](https://github.com/python-boltons/clack/compare/0.2.5...0.2.6) - 2022-01-08
