@@ -155,11 +155,11 @@ def _config_settings_factory() -> _SettingsSource:
         config_file = dyn.get_config_file()
 
         if config_file is None:
-            return config_settings_no_config_file(app_name)
+            return config_settings_from_app_name(app_name)
         else:
-            return config_settings_with_config_file(config_file)
+            return config_settings_from_config_file(config_file)
 
-    def config_settings_no_config_file(app_name: str) -> Dict[str, Any]:
+    def config_settings_from_app_name(app_name: str) -> Dict[str, Any]:
         """The pydantic.BaseSettings source callable that we will return.
 
         NOTE:
@@ -220,7 +220,7 @@ def _config_settings_factory() -> _SettingsSource:
 
         return result
 
-    def config_settings_with_config_file(config_file: Path) -> Dict[str, Any]:
+    def config_settings_from_config_file(config_file: Path) -> Dict[str, Any]:
         """The pydantic.BaseSettings source callable that we will return.
 
         NOTE:
