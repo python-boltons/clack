@@ -19,6 +19,7 @@ class ConfigFile(Protocol):
 
     # All possible filename extensions for this type of config file.
     extensions: List[str]
+    path: Path
 
     def __init__(self, path: PathLike) -> None:
         pass
