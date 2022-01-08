@@ -9,6 +9,7 @@ from typing import (
     Dict,
     List,
     MutableMapping,
+    Optional,
     Protocol,
     Sequence,
     Tuple,
@@ -52,6 +53,7 @@ class AbstractConfig(Protocol[co_Config_T]):
 class Config(BaseSettings):
     """Default CLI arguments / app configuration."""
 
+    config_file: Optional[Path] = None
     logs: List[Log] = []
     verbose: int = 0
 
@@ -81,19 +83,15 @@ class Config(BaseSettings):
         ) -> Tuple[_SettingsSource, ...]:
             """Customize where we load our application config from."""
             # HACK: Use nested import to prevent circular import errors.
-            from ._dynvars import get_app_name
-
             del file_secret_settings
-
-            app_name = get_app_name()
             return (
                 init_settings,
                 env_settings,
-                _config_settings_factory(app_name),
+                _config_settings_factory(),
             )
 
 
-def _config_settings_factory(app_name: str) -> _SettingsSource:
+def _config_settings_factory() -> _SettingsSource:
     """Configuration Settings Factory Function
 
     Factory function that returns a pydantic.BaseSettings source callable that
@@ -148,8 +146,24 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
 
     def config_settings(settings: BaseSettings) -> Dict[str, Any]:
         """The pydantic.BaseSettings source callable that we will return."""
+        from . import _dynvars as dyn
+
         del settings
 
+        app_name = dyn.get_app_name()
+        config_file = dyn.get_config_file()
+
+        if config_file is None:
+            return config_settings_no_config_file(app_name)
+        else:
+            return config_settings_with_config_file(config_file)
+
+    def config_settings_no_config_file(app_name: str) -> Dict[str, Any]:
+        """The pydantic.BaseSettings source callable that we will return.
+
+        NOTE: This function is only used when a user has NOT specified an
+          explicit config file location (e.g. via --config=foo.yml).
+        """
         ##### Helper variables used by MutexConfigGroup objects...
         app_path = Path(app_name)
         base_xdg_dir = xdg.get_base_dir("config")
@@ -202,6 +216,17 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
         user_group_for_this_app.populate_config_map(result)
         local_group_for_this_app.populate_config_map(result)
 
+        return result
+
+    def config_settings_with_config_file(config_file: Path) -> Dict[str, Any]:
+        """The pydantic.BaseSettings source callable that we will return.
+
+        NOTE: This function is only used when a user has specified an
+          explicit config file location (e.g. via --config=foo.yml).
+        """
+        result: Dict[str, Any] = {}
+        single_file_group = MutexConfigGroup.from_path_lists([config_file])
+        single_file_group.populate_config_map(result)
         return result
 
     return config_settings

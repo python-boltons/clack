@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import signal
 import sys
 from typing import (
@@ -11,6 +12,7 @@ from typing import (
     Final,
     Iterable,
     List,
+    Optional,
     Protocol,
     Sequence,
     Type,
@@ -87,8 +89,11 @@ def main_factory(
     def main_run(argv: Sequence[str]) -> int:
         assert run is not None
 
+        config_file = _get_config_file(argv)
         config_type = _get_run_cfg(run)
-        with dyn.clack_envvars_set(app_name, [config_type]):
+        with dyn.clack_envvars_set(
+            app_name, [config_type], config_file=config_file
+        ):
             cfg = config_type.from_cli_args(argv)
 
         return do_main_work(run, cfg)
@@ -100,17 +105,20 @@ def main_factory(
         runner_list = list(runners)
         all_config_types = _get_all_config_types(runner_list)
 
-        with dyn.clack_envvars_set(app_name, all_config_types):
+        config_file = _get_config_file(argv)
+        with dyn.clack_envvars_set(
+            app_name, all_config_types, config_file=config_file
+        ):
             parser_kwargs = parser(argv)
 
-        config_type = _config_type_from_command(
-            all_config_types, parser_kwargs["command"]
-        )
+            config_type = _config_type_from_command(
+                all_config_types, parser_kwargs["command"]
+            )
 
-        filtered_kwargs = filter_cli_args(parser_kwargs)
-        cfg = config_type(**filtered_kwargs)  # type: ignore[call-arg]
+            filtered_kwargs = filter_cli_args(parser_kwargs)
+            cfg = config_type(**filtered_kwargs)  # type: ignore[call-arg]
+
         run = _main_runner_factory(runners)
-
         return do_main_work(run, cfg)
 
     def do_main_work(runner: Runner, cfg: AbstractConfig) -> int:
@@ -153,6 +161,20 @@ def main_factory(
         return wrap_main(main_runners)
     else:
         return wrap_main(main_run)
+
+
+def _get_config_file(argv: Sequence[str]) -> Optional[Path]:
+    for opt in ["-c", "--config"]:
+        if opt in argv:
+            idx = argv.index(opt)
+            return Path(argv[idx + 1])
+
+        for argv_opt in argv:
+            if opt in argv_opt:
+                cfg_fname = argv_opt.replace(opt, "").lstrip("=")
+                return Path(cfg_fname)
+
+    return None
 
 
 def _main_runner_factory(runners: Iterable[Runner]) -> Runner:

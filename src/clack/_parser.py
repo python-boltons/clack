@@ -53,6 +53,16 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     monkey_patch_parser(parser)
 
     parser.add_argument(
+        "-c",
+        "--config",
+        dest="config_file",
+        type=Path,
+        help=(
+            "Absolute or relative path to a YAML file that contains this"
+            " application's configuration."
+        ),
+    )
+    parser.add_argument(
         "-L",
         "--log",
         metavar="FILE[:LEVEL][@FORMAT]",
@@ -86,15 +96,16 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     )
 
     caller_module = inspect.getmodule(frame)
-    package = getattr(caller_module, "__package__", None)
-    if package:
+    caller_package = getattr(caller_module, "__package__", None)
+    caller_file = getattr(caller_module, "__file__", None)
+    if caller_package and caller_file:
         assert caller_module is not None
         try:
-            package_version = get_version(package)
-            version = f"{package} {package_version}"
+            package_version = get_version(caller_package)
+            version = f"{caller_package} {package_version}"
 
             package_location = _get_package_location(
-                caller_module.__file__, package
+                caller_file, caller_package
             )
             version += f"\n    from {package_location}"
 

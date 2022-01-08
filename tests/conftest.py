@@ -10,8 +10,6 @@ from freezegun import freeze_time
 from pytest import fixture
 import structlog
 
-from clack import _dynvars as dyn
-
 
 pytest_plugins = ["logrus.pytest_plugin"]
 
@@ -21,18 +19,6 @@ def frozen_time() -> Iterator[None]:
     """Freeze time until our tests are done running."""
     with freeze_time("2021-09-06T15:45:03.585481Z"):
         yield
-
-
-@fixture(autouse=True)
-def clear_lru_cache() -> None:
-    """Clear function LRU cache before each test.
-
-    Clears cache of functions that have been decorated with
-    @functools.lru_cache before each test.
-    """
-
-    dyn.get_app_name.cache_clear()
-    dyn.get_config_defaults.cache_clear()
 
 
 @fixture(autouse=True)

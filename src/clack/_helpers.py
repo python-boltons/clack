@@ -50,7 +50,7 @@ def new_command_factory(
         help: str,  # pylint: disable=redefined-builtin
         **inner_kwargs: Any,
     ) -> argparse.ArgumentParser:
-        result = subparsers.add_parser(
+        result: argparse.ArgumentParser = subparsers.add_parser(
             name,
             formatter_class=parser.formatter_class,
             help=help,

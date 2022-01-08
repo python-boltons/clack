@@ -12,15 +12,15 @@ def test_new_command_factory() -> None:
     """Test the clack.new_command_factory() function."""
     with dyn.clack_envvars_set("test_clack", [Config]):  # type: ignore[list-item]
         parser = clack.Parser()
+        new_command = clack.new_command_factory(parser, dest="command")
+        foo = new_command("foo", help="Test FOO subcommand.")
 
-    new_command = clack.new_command_factory(parser, dest="command")
+        foo.add_argument("--bar", action="store_true", help="Test BAR option.")
 
-    foo = new_command("foo", help="Test FOO subcommand.")
-    foo.add_argument("--bar", action="store_true", help="Test BAR option.")
+        args = parser.parse_args(["foo", "--bar"])
 
-    args = parser.parse_args(["foo", "--bar"])
-    assert args.command == "foo"
-    assert args.bar
+        assert args.command == "foo"
+        assert args.bar
 
 
 def test_config_is_immutable() -> None:
