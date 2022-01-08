@@ -59,9 +59,9 @@ class Config(BaseSettings):
         """Pydantic BaseSettings Configuration.
 
         NOTE: It is an unfortunate coincidence that this class must be named
-        the same as its parent. This is a pydantic convention, but we (clack
-        library maintainers) refuse to give up on the 'Config' / '*Config'
-        naming scheme.
+          the same as its parent. This is a pydantic convention, but we (clack
+          library maintainers) refuse to give up on the 'Config' / '*Config'
+          naming scheme.
         """
 
         # Raise an Exception if anyone tries to modify the configuration
