@@ -132,7 +132,7 @@ def _config_settings_factory() -> _SettingsSource:
 
             Set configuration options (by adding keys to the ``mut_config_map``
             mapping) using (at most) one of the config files corresponding with
-            the ``mgroup`` MutexConfigGroup.
+            this MutexConfigGroup.
             """
             for config_path in self.config_paths:
                 if config_path.is_file():
