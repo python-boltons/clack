@@ -169,8 +169,12 @@ def _get_config_file_from_argv(argv: Sequence[str]) -> Optional[Path]:
             if opt == argv_opt:
                 return Path(argv[idx + 1])
 
-            if argv_opt.startswith(opt):
-                cfg_fname = argv_opt[len(opt) :].lstrip("=")
+            opt_prefix = opt
+            if opt_prefix.startswith("--"):
+                opt_prefix += "="
+
+            if argv_opt.startswith(opt_prefix):
+                cfg_fname = argv_opt[len(opt_prefix) :]
                 return Path(cfg_fname)
 
     return None
