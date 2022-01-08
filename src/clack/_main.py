@@ -116,7 +116,7 @@ def main_factory(
             )
 
             filtered_kwargs = filter_cli_args(parser_kwargs)
-            cfg = config_type(**filtered_kwargs)  # type: ignore[call-arg]
+            cfg = config_type(**filtered_kwargs)
 
         run = _main_runner_factory(runners)
         return do_main_work(run, cfg)

@@ -44,7 +44,7 @@ def run_factory(logger_type: LoggerType) -> Callable[[Any], int]:
 
         if cfg.do_stuff:
             if logger_type == "structlog":
-                log.info("Doing some %s...", "stuff", stuff="???")
+                log.info("Doing some %s...", "stuff", stuff="???")  # type: ignore[call-arg]
             else:
                 assert logger_type == "logging"
                 log.info("Doing some %s...", "stuff")

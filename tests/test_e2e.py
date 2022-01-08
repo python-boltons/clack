@@ -38,8 +38,10 @@ def test_end_to_end(
     log = logger.bind(mod=mod)
 
     mod_name = mod.__name__.rsplit(".", maxsplit=1)[-1]
+    mod_file = mod.__file__
+    assert mod_file is not None
 
-    mod_path = Path(mod.__file__)
+    mod_path = Path(mod_file)
     log.info("Loading test cases from dummy application.", mod_path=mod_path)
     lines = mod_path.read_text().split("\n")
     all_comment_lines = case_comments_from_lines(lines)
