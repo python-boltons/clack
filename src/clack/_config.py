@@ -60,10 +60,10 @@ class Config(BaseSettings):
     class Config:
         """Pydantic BaseSettings Configuration.
 
-        NOTE: It is an unfortunate coincidence that this class must be named
-          the same as its parent. This is a pydantic convention, but we (clack
-          library maintainers) refuse to give up on the 'Config' / '*Config'
-          naming scheme.
+        NOTE:
+          It is an unfortunate coincidence that this class must be named the
+          same as its parent. This is a pydantic convention, but we (clack
+          library maintainers) refuse to give up on the 'Config' naming scheme.
         """
 
         # Raise an Exception if anyone tries to modify the configuration
@@ -161,8 +161,9 @@ def _config_settings_factory() -> _SettingsSource:
     def config_settings_no_config_file(app_name: str) -> Dict[str, Any]:
         """The pydantic.BaseSettings source callable that we will return.
 
-        NOTE: This function is only used when a user has NOT specified an
-          explicit config file location (e.g. via --config=foo.yml).
+        NOTE:
+          This function is only used when a user has NOT specified an explicit
+          config file location (e.g. via --config=foo.yml).
         """
         ##### Helper variables used by MutexConfigGroup objects...
         app_path = Path(app_name)
