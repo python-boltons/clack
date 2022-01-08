@@ -56,9 +56,17 @@ import clack
 # CONFIG:   XDG/simple.yml {"foo": "UserFoo", "bar": "456"}
 # OUTPUT:   foo=LocalFoo bar=456 baz=True
 
+# TEST | The -c CLI option works overrides all other configs.
+# -----------------------------------------------------------
+# ARGS:     -c custom.yml --baz
+# CONFIG:   custom.yml {"foo": "CustomFoo", "bar": "987"}
+# CONFIG:   .simple/config.yml {"foo": "LocalFoo"}
+# CONFIG:   XDG/simple.yml {"foo": "UserFoo", "bar": "456"}
+# OUTPUT:   foo=CustomFoo bar=987 baz=True
+
 # TEST | The --config CLI option works overrides all other configs.
 # -----------------------------------------------------------------
-# ARGS:     -c custom.yml --baz
+# ARGS:     --config=custom.yml --baz
 # CONFIG:   custom.yml {"foo": "CustomFoo", "bar": "987"}
 # CONFIG:   .simple/config.yml {"foo": "LocalFoo"}
 # CONFIG:   XDG/simple.yml {"foo": "UserFoo", "bar": "456"}
