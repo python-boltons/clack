@@ -107,12 +107,13 @@ def _config_settings_factory() -> _SettingsSource:
         configuration file in this group that exists on disk (if any do).
         """
 
-        def __init__(self, config_paths: List[Path]):
+        def __init__(self, config_paths: List[Path], *, set_config_file: bool):
             self.config_paths = config_paths
+            self.set_config_file = set_config_file
 
         @classmethod
         def from_path_lists(
-            cls, *path_like_lists: List[PathLike]
+            cls, *path_like_lists: List[PathLike], set_config_file: bool = True
         ) -> "MutexConfigGroup":
             """MutexConfigGroup class constructor.
 
@@ -123,7 +124,7 @@ def _config_settings_factory() -> _SettingsSource:
             for path_like_list in path_like_lists:
                 for path_like in path_like_list:
                     flat_path_list.append(Path(path_like))
-            return cls(flat_path_list)
+            return cls(flat_path_list, set_config_file=set_config_file)
 
         def populate_config_map(
             self, mut_config_map: MutableMapping[str, Any]
@@ -138,7 +139,10 @@ def _config_settings_factory() -> _SettingsSource:
                 if config_path.is_file():
                     yaml_dict = yaml.safe_load(config_path.read_bytes())
                     mut_config_map.update(yaml_dict)
-                    mut_config_map["config_file"] = config_path
+
+                    if self.set_config_file:
+                        mut_config_map["config_file"] = config_path
+
                     break
 
     def all_yamls(name: PathLike) -> List[PathLike]:
@@ -178,10 +182,15 @@ def _config_settings_factory() -> _SettingsSource:
         ##### MutexConfigGroup variable definitions...
         # user config files used by ALL clack apps
         #
+        # Note that we do NOT set the Config.config_file setting if the only
+        # configuration file found is used by all apps (i.e. belongs to the
+        # following MutexConfigGroup).
+        #
         # e.g. ~/.config/clack/global.yml OR ~/.config/clack/apps/all.yml...
         user_group_for_all_apps = MutexConfigGroup.from_path_lists(
             all_yamls(clack_xdg_dir / "global"),
             all_yamls(clack_apps_dir / "all"),
+            set_config_file=False,
         )
 
         # app-specific user config files
