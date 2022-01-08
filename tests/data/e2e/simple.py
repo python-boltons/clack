@@ -79,6 +79,13 @@ import clack
 # CONFIG:   XDG/simple.yml {"foo": "UserFoo", "bar": "456"}
 # OUTPUT:   foo=LocalFoo bar=456 baz=True cheese=cheddar
 
+# TEST | The Config.config_file attribute is set?
+# -----------------------------------------------
+# ARGS:     --baz --show-config
+# CONFIG:   .simple/config.yml {"foo": "LocalFoo"}
+# CONFIG:   XDG/simple.yml {"foo": "UserFoo", "bar": "456"}
+# OUTPUT:   foo=LocalFoo bar=456 baz=True config=.simple/config.yml
+
 
 class Config(clack.Config):
     """Application Config."""
@@ -87,6 +94,7 @@ class Config(clack.Config):
     bar: int
     baz: bool = False
     cheese: Optional[str] = None
+    show_config: bool = False
 
     @classmethod
     def from_cli_args(cls, argv: Sequence[str]) -> Config:
@@ -96,6 +104,7 @@ class Config(clack.Config):
         parser.add_argument("-B", "--some-bar", dest="bar", type=int)
         parser.add_argument("--baz", action="store_true")
         parser.add_argument("--cheese")
+        parser.add_argument("--show-config", action="store_true")
 
         args = parser.parse_args(argv[1:])
         kwargs = clack.filter_cli_args(args)
@@ -106,8 +115,13 @@ class Config(clack.Config):
 def run(cfg: Config) -> int:
     """Runner function."""
     output = f"foo={cfg.foo} bar={cfg.bar} baz={cfg.baz}"
+
     if cfg.cheese is not None:
         output += f" cheese={cfg.cheese}"
+
+    if cfg.show_config:
+        output += f" config={cfg.config_file}"
+
     print(output)
     return 0
 

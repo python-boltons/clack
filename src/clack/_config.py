@@ -138,6 +138,7 @@ def _config_settings_factory() -> _SettingsSource:
                 if config_path.is_file():
                     yaml_dict = yaml.safe_load(config_path.read_bytes())
                     mut_config_map.update(yaml_dict)
+                    mut_config_map["config_file"] = config_path
                     break
 
     def all_yamls(name: PathLike) -> List[PathLike]:
