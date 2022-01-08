@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 No notable changes have been made.
 
 
-## [0.2.1](https://github.com/python-boltons/clack/compare/0.2.1...0.2.2) - 2022-01-06
+## [0.2.2](https://github.com/python-boltons/clack/compare/0.2.1...0.2.2) - 2022-01-06
 
 ### Fixed
 
