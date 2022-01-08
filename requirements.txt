@@ -4,12 +4,20 @@
 #
 #    "make update-requirements"
 #
+bolton-eris==0.2.2
+    # via -r requirements.in
+bolton-ion==0.1.0
+    # via bolton-eris
 bolton-logrus==0.1.0
     # via -r requirements.in
 bolton-metaman==0.1.1
-    # via bolton-logrus
+    # via
+    #   bolton-eris
+    #   bolton-logrus
 bolton-typist==0.1.1
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   bolton-eris
 pydantic==1.9.0
     # via -r requirements.in
 pyyaml==6.0
