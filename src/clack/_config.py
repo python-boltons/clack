@@ -56,9 +56,20 @@ class Config(BaseSettings):
     verbose: int = 0
 
     class Config:
-        """Pydantic BaseSettings Configuration."""
+        """Pydantic BaseSettings Configuration.
 
+        NOTE: It is an unfortunate coincidence that this class must be named
+        the same as its parent. This is a pydantic convention, but we (clack
+        library maintainers) refuse to give up on the 'Config' / '*Config'
+        naming scheme.
+        """
+
+        # Raise an Exception if anyone tries to modify the configuration
+        # classes' attributes after it has been instantiated.
         allow_mutation = False
+
+        # Allow extra init arguments to be passed into the configuration class
+        # at initialization time (just ignore them).
         extra = "ignore"
 
         @classmethod
@@ -86,7 +97,7 @@ def _config_settings_factory(app_name: str) -> _SettingsSource:
     """Configuration Settings Factory Function
 
     Factory function that returns a pydantic.BaseSettings source callable that
-    reads values from a YAML config file.
+    reads values from one or more YAML config file.
     """
 
     class MutexConfigGroup:
