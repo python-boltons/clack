@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import argparse
-from typing import Any, List
+from typing import Any, Callable, List, MutableSequence
 
 from ._parser import monkey_patch_parser
-from .types import ClackNewCommand
+from .types import ClackNewCommand, ClackRunner
 
 
 def new_command_factory(
@@ -49,6 +49,18 @@ def new_command_factory(
         return result
 
     return new_command
+
+
+def register_runner_factory(
+    mut_runner_registry: MutableSequence[ClackRunner],
+) -> Callable[[ClackRunner], ClackRunner]:
+    """Creates a decorator that can be used to register runner functions."""
+
+    def register_runner(runner: ClackRunner) -> ClackRunner:
+        mut_runner_registry.append(runner)
+        return runner
+
+    return register_runner
 
 
 class comma_list_or_file:

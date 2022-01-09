@@ -66,6 +66,11 @@ FooCommand = Literal["foo"]
 Command = Literal[BarCommand, BazCommand, FooCommand]
 
 
+# The ALL_RUNNERS list is populated later by the `register_runner` decorator.
+ALL_RUNNERS: List[ClackRunner] = []
+register_runner = clack.register_runner_factory(ALL_RUNNERS)
+
+
 class Config(clack.Config):
     """Shared Configuration."""
 
@@ -117,25 +122,27 @@ def clack_parser(argv: Sequence[str]) -> dict[str, Any]:
     return vars(args)
 
 
+@register_runner
 def run_bar(cfg: BarConfig) -> int:
     """Runner function."""
     print(f"bar={cfg.bar}, barbar={cfg.barbar}")
     return 0
 
 
+@register_runner
 def run_baz(cfg: BazConfig) -> int:
     """Runner function."""
     print(f"baz={cfg.baz}")
     return 0
 
 
+@register_runner
 def run_foo(cfg: FooConfig) -> int:
     """Runner function."""
     print(f"foo={cfg.foo} foo_txt={cfg.foo_txt}")
     return 0
 
 
-ALL_RUNNERS: List[ClackRunner] = [run_bar, run_baz, run_foo]
 main = clack.main_factory(
     "subcommands", runners=ALL_RUNNERS, parser=clack_parser
 )

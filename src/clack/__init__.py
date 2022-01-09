@@ -9,7 +9,11 @@ import logging as _logging
 from . import types, xdg
 from ._config import Config
 from ._config_file import YAMLConfigFile
-from ._helpers import comma_list_or_file, new_command_factory
+from ._helpers import (
+    comma_list_or_file,
+    new_command_factory,
+    register_runner_factory,
+)
 from ._main import main_factory
 from ._parser import Parser, filter_cli_args
 
@@ -22,6 +26,7 @@ __all__ = [
     "filter_cli_args",
     "main_factory",
     "new_command_factory",
+    "register_runner_factory",
     "types",
     "xdg",
 ]

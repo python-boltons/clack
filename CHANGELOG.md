@@ -9,9 +9,16 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.3.0...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.3.1...HEAD)
 
 No notable changes have been made.
+
+
+## [0.3.1](https://github.com/python-boltons/clack/compare/0.3.0...0.3.1) - 2022-01-09
+
+### Added
+
+* Add `clack.register_runner_factory()` function.
 
 
 ## [0.3.0](https://github.com/python-boltons/clack/compare/0.2.9...0.3.0) - 2022-01-08
