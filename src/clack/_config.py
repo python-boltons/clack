@@ -29,13 +29,13 @@ from ._config_file import ConfigFile, YAMLConfigFile
 
 
 Config_T = TypeVar("Config_T", bound="AbstractConfig")
-co_Config_T = TypeVar("co_Config_T", bound="AbstractConfig", covariant=True)
+Config_T_co = TypeVar("Config_T_co", bound="AbstractConfig", covariant=True)
 
 _SettingsSource = Callable[[BaseSettings], Dict[str, Any]]
 
 
 @runtime_checkable
-class AbstractConfig(Protocol[co_Config_T]):
+class AbstractConfig(Protocol[Config_T_co]):
     """Application Configuration Protocol
 
     In other words, this class describes what an application Config object
@@ -46,8 +46,8 @@ class AbstractConfig(Protocol[co_Config_T]):
 
     @classmethod
     def from_cli_args(
-        cls: Type[co_Config_T], argv: Sequence[str]
-    ) -> co_Config_T:
+        cls: Type[Config_T_co], argv: Sequence[str]
+    ) -> Config_T_co:
         """Constructs a new Config object from command-line arguments."""
 
 

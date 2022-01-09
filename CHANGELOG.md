@@ -9,9 +9,16 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.2.8...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.2.9...HEAD)
 
 No notable changes have been made.
+
+
+## [0.2.9](https://github.com/python-boltons/clack/compare/0.2.8...0.2.9) - 2022-01-08
+
+### Fixed
+
+* Add `AbstractConfig`, `Confit_T`, and `Config_T_co` to API.
 
 
 ## [0.2.8](https://github.com/python-boltons/clack/compare/0.2.7...0.2.8) - 2022-01-08
