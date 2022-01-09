@@ -3,22 +3,10 @@
 from __future__ import annotations
 
 import argparse
-from typing import Any, List, Protocol
+from typing import Any, List
 
 from ._parser import monkey_patch_parser
-
-
-class NewCommand(Protocol):
-    """Type of the function returned by `new_command_factory()`."""
-
-    def __call__(
-        self,
-        name: str,
-        *,
-        help: str,  # pylint: disable=redefined-builtin
-        **kwargs: Any,
-    ) -> argparse.ArgumentParser:
-        """This method captures the `new_command()` function's signature."""
+from .types import NewCommand
 
 
 def new_command_factory(

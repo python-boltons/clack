@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 from typing import (
     Any,
@@ -75,3 +76,16 @@ class ClackMain(Protocol):
 
     def __call__(self, argv: Sequence[str] = None) -> int:
         """This method captures the `main()` function's signature."""
+
+
+class NewCommand(Protocol):
+    """Type of the function returned by `new_command_factory()`."""
+
+    def __call__(
+        self,
+        name: str,
+        *,
+        help: str,  # pylint: disable=redefined-builtin
+        **kwargs: Any,
+    ) -> argparse.ArgumentParser:
+        """This method captures the `new_command()` function's signature."""
