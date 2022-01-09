@@ -13,4 +13,5 @@ Submodules
    :maxdepth: 4
 
    clack.pytest_plugin
+   clack.types
    clack.xdg
