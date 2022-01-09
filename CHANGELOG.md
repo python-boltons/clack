@@ -20,6 +20,10 @@ No notable changes have been made.
 
 * Add `clack.register_runner_factory()` function.
 
+### Changed
+
+* The `ClackConfigFile.set()` method now returns an `eris.LazyResult` type.
+
 
 ## [0.3.0](https://github.com/python-boltons/clack/compare/0.2.9...0.3.0) - 2022-01-08
 
