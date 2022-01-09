@@ -23,7 +23,7 @@ from logrus import Log, Logger, init_logging
 from typist import literal_to_list
 
 from . import _dynvars as dyn
-from ._parser import filter_cli_args
+from ._helpers import filter_cli_args
 from .types import ClackConfig, ClackMain, ClackParser, ClackRunner
 
 

@@ -11,11 +11,12 @@ from ._config import Config
 from ._config_file import YAMLConfigFile
 from ._helpers import (
     comma_list_or_file,
+    filter_cli_args,
     new_command_factory,
     register_runner_factory,
 )
 from ._main import main_factory
-from ._parser import Parser, filter_cli_args
+from ._parser import Parser
 
 
 __all__ = [

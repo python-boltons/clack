@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import argparse
-from typing import Any, Callable, List, MutableSequence
+from typing import Any, Callable, List, Mapping, MutableSequence
 
 from ._parser import monkey_patch_parser
 from .types import ClackNewCommand, ClackRunner
@@ -61,6 +61,36 @@ def register_runner_factory(
         return runner
 
     return register_runner
+
+
+def filter_cli_args(
+    args: argparse.Namespace | Mapping[str, Any]
+) -> dict[str, Any]:
+    """Filters args produced by 'parser' passed into clack.main_factory().
+
+    Used to filter out argparse arguments which were NOT specified on the
+    command-line.
+    """
+    from . import _dynvars as dyn
+    from ._parser import ARGPARSE_ARGUMENT_DEFAULT
+
+    if not isinstance(args, argparse.Namespace):
+        kwargs = args
+    else:
+        kwargs = vars(args)
+
+    config_defaults = dyn.get_config_defaults()
+
+    result = {}
+    for key, value in kwargs.items():
+        if key in config_defaults and config_defaults[key] == value:
+            continue
+
+        if value is ARGPARSE_ARGUMENT_DEFAULT:
+            continue
+
+        result[key] = value
+    return result
 
 
 class comma_list_or_file:

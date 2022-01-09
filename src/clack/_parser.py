@@ -23,17 +23,17 @@ from typing import (
 from logrus import Log, LogFormat, LogLevel, get_default_logfile
 from typist import literal_to_list
 
+from . import _dynvars as dyn
 from ._config_file import YAMLConfigFile
-from ._dynvars import get_app_name, get_config_defaults
 
 
-_ARGPARSE_ARGUMENT_DEFAULT = object()
+ARGPARSE_ARGUMENT_DEFAULT = object()
 
 
 def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     """Wrapper for argparse.ArgumentParser."""
 
-    app_name = get_app_name()
+    app_name = dyn.get_app_name()
 
     stack = list(inspect.stack())
     stack.pop(0)
@@ -139,33 +139,6 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     return parser
 
 
-def filter_cli_args(
-    args: argparse.Namespace | Mapping[str, Any]
-) -> dict[str, Any]:
-    """Filters args produced by 'parser' passed into clack.main_factory().
-
-    Used to filter out argparse arguments which were NOT specified on the
-    command-line.
-    """
-    if not isinstance(args, argparse.Namespace):
-        kwargs = args
-    else:
-        kwargs = vars(args)
-
-    config_defaults = get_config_defaults()
-
-    result = {}
-    for key, value in kwargs.items():
-        if key in config_defaults and config_defaults[key] == value:
-            continue
-
-        if value is _ARGPARSE_ARGUMENT_DEFAULT:
-            continue
-
-        result[key] = value
-    return result
-
-
 def monkey_patch_parser(parser: argparse.ArgumentParser) -> None:
     """Tweeks ArgumentParser a bit so it works better with clack."""
     _patch_add_argument_method(parser)
@@ -175,9 +148,9 @@ def _patch_add_argument_method(parser: argparse.ArgumentParser) -> None:
     def add_argument(*args: Any, **kwargs: Any) -> None:
         if "default" not in kwargs:
             field_name = _get_field_name(args, kwargs)
-            config_defaults = get_config_defaults()
+            config_defaults = dyn.get_config_defaults()
             default = config_defaults.get(
-                field_name, _ARGPARSE_ARGUMENT_DEFAULT
+                field_name, ARGPARSE_ARGUMENT_DEFAULT
             )
             kwargs["default"] = default
 
