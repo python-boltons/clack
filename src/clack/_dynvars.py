@@ -13,7 +13,7 @@ from pathlib import Path
 import pickle
 from typing import Any, Final, Iterable, Iterator, Optional, Type
 
-from ._config import AbstractConfig
+from .types import ClackConfig
 
 
 _CODECS_ENCODING: Final = "base64"
@@ -23,7 +23,7 @@ _NO_CONFIG_FILE: Final = "DEFAULT_CLACK_CONFIG_FILE_LIST"
 @contextmanager
 def clack_envvars_set(
     app_name: str,
-    config_types: Iterable[Type[AbstractConfig]],
+    config_types: Iterable[Type[ClackConfig]],
     *,
     config_file: Path = None,
 ) -> Iterator[None]:
@@ -57,7 +57,7 @@ def clack_envvars_set(
 
 
 def _config_defaults_from_config_type(
-    config_type: Type[AbstractConfig],
+    config_type: Type[ClackConfig],
 ) -> dict[str, Any]:
     result = {}
     for key, value in config_type.__fields__.items():

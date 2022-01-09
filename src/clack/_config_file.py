@@ -1,45 +1,13 @@
-"""Contains the ConfigFile protocol and its implementations."""
+"""Contains the ConfigFile protocol's implementations."""
 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List, Protocol, Type, TypeVar, runtime_checkable
+from typing import Any, Dict
 
 from eris import ErisError, Err, Ok, Result
 from typist import PathLike
 import yaml
-
-
-ConfigFile_T = TypeVar("ConfigFile_T", bound="ConfigFile")
-
-
-@runtime_checkable
-class ConfigFile(Protocol):
-    """The protocol used for configuration file classes."""
-
-    # All possible filename extensions for this type of config file.
-    extensions: List[str]
-    path: Path
-
-    def __init__(self, path: PathLike) -> None:
-        pass
-
-    def get(self, key: str) -> Result[Any, ErisError]:
-        """Getter for values in this config file."""
-
-    @classmethod
-    def new(
-        cls: Type[ConfigFile_T], path: PathLike, **kwargs: Any
-    ) -> ConfigFile_T:
-        """Construct a new ConfigFile object."""
-
-    def set(
-        self, key: str, value: Any, *, allow_new: bool = False
-    ) -> Result[Any, ErisError]:
-        """Setter for values in this config file."""
-
-    def to_dict(self) -> Result[dict[str, Any], ErisError]:
-        """Converts this configuration file into a dict."""
 
 
 class YAMLConfigFile:

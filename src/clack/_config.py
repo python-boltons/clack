@@ -10,53 +10,40 @@ from typing import (
     List,
     MutableMapping,
     Optional,
-    Protocol,
     Sequence,
     Tuple,
     Type,
-    TypeVar,
     Union,
-    runtime_checkable,
 )
 
 from logrus import Log
 from pydantic import BaseSettings
-from pydantic.fields import ModelField
 from typist import PathLike
 
 from . import xdg
-from ._config_file import ConfigFile, YAMLConfigFile
+from ._config_file import YAMLConfigFile
+from .types import ClackConfigFile, Config_T
 
-
-Config_T = TypeVar("Config_T", bound="AbstractConfig")
-Config_T_co = TypeVar("Config_T_co", bound="AbstractConfig", covariant=True)
 
 _SettingsSource = Callable[[BaseSettings], Dict[str, Any]]
-
-
-@runtime_checkable
-class AbstractConfig(Protocol[Config_T_co]):
-    """Application Configuration Protocol
-
-    In other words, this class describes what an application Config object
-    should look like.
-    """
-
-    __fields__: Dict[str, ModelField]
-
-    @classmethod
-    def from_cli_args(
-        cls: Type[Config_T_co], argv: Sequence[str]
-    ) -> Config_T_co:
-        """Constructs a new Config object from command-line arguments."""
 
 
 class Config(BaseSettings):
     """Default CLI arguments / app configuration."""
 
-    config_file: Optional[ConfigFile] = None
+    config_file: Optional[ClackConfigFile] = None
     logs: List[Log] = []
     verbose: int = 0
+
+    @classmethod
+    def from_cli_args(cls: Type[Config_T], argv: Sequence[str]) -> Config_T:
+        """Dummy function so this class follows ClackConfig protocol."""
+        del argv
+        raise NotImplementedError(
+            "Basic clack applications (i.e. clack applications that do not use"
+            " CLI subcommands) MUST define a from_cli_args() class method on"
+            " their clack.Config subclass."
+        )
 
     class Config:
         """Pydantic BaseSettings Configuration.
@@ -94,7 +81,7 @@ class Config(BaseSettings):
 
 
 def _config_settings_factory(
-    config_file_type: Type[ConfigFile],
+    config_file_type: Type[ClackConfigFile],
 ) -> _SettingsSource:
     """Configuration Settings Factory Function
 

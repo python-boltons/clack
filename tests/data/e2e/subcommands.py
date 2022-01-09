@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Literal, Sequence
+from typing import Any, List, Literal, Sequence
 
 import clack
+from clack.types import ClackRunner
 
 
 # TEST | Basic test of 'bar' subcommand.
@@ -134,6 +135,7 @@ def run_foo(cfg: FooConfig) -> int:
     return 0
 
 
+ALL_RUNNERS: List[ClackRunner] = [run_bar, run_baz, run_foo]
 main = clack.main_factory(
-    "subcommands", runners=[run_bar, run_baz, run_foo], parser=clack_parser
+    "subcommands", runners=ALL_RUNNERS, parser=clack_parser
 )

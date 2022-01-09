@@ -24,7 +24,8 @@ from typing import (
 from logrus import Logger
 from typist import PathLike
 
-from clack import ConfigFile, xdg
+from clack import xdg
+from clack.types import ClackConfigFile
 
 
 logger = Logger(__name__)
@@ -50,7 +51,7 @@ class Case(NamedTuple):
     @classmethod
     def from_comment_lines(
         cls,
-        config_file_type: Type[ConfigFile],
+        config_file_type: Type[ClackConfigFile],
         app_name: str,
         lines: Sequence[str],
     ) -> Case:

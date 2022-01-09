@@ -9,9 +9,21 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.2.9...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.3.0...HEAD)
 
 No notable changes have been made.
+
+
+## [0.3.0](https://github.com/python-boltons/clack/compare/0.2.9...0.3.0) - 2022-01-08
+
+### Changed
+
+* *BREAKING CHANGE*: Migrated all types / protocols to the `clack.types` module.
+* *BREAKING CHANGE*: The names of many variables were changed (most of these variables now live in the new `clack.types` module).
+
+### Fixed
+
+* Fix the `clack.Config` class so it is now of type `clack.types.ClackConfig`.
 
 
 ## [0.2.9](https://github.com/python-boltons/clack/compare/0.2.8...0.2.9) - 2022-01-08

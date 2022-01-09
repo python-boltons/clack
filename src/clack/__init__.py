@@ -6,21 +6,16 @@ configuration.
 
 import logging as _logging
 
-from . import xdg
-from ._config import AbstractConfig, Config, Config_T, Config_T_co
-from ._config_file import ConfigFile, YAMLConfigFile
+from . import types, xdg
+from ._config import Config
+from ._config_file import YAMLConfigFile
 from ._helpers import NewCommand, comma_list_or_file, new_command_factory
-from ._main import MainType, main_factory
+from ._main import main_factory
 from ._parser import Parser, filter_cli_args
 
 
 __all__ = [
-    "AbstractConfig",
     "Config",
-    "ConfigFile",
-    "Config_T",
-    "Config_T_co",
-    "MainType",
     "NewCommand",
     "Parser",
     "YAMLConfigFile",
@@ -28,6 +23,7 @@ __all__ = [
     "filter_cli_args",
     "main_factory",
     "new_command_factory",
+    "types",
     "xdg",
 ]
 

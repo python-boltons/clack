@@ -12,7 +12,8 @@ from _pytest.tmpdir import TempPathFactory
 from logrus import Logger
 from pytest import mark
 
-from clack import ConfigFile, MainType, YAMLConfigFile
+from clack import YAMLConfigFile
+from clack.types import ClackConfigFile, ClackMain
 
 from .data.e2e import e2e_test_mods
 from .e2e_helpers import (
@@ -34,7 +35,7 @@ def test_end_to_end(
     tmp_path_factory: TempPathFactory,
     capsys: CaptureFixture,
     mod: ModuleType,
-    config_file_type: Type[ConfigFile],
+    config_file_type: Type[ClackConfigFile],
 ) -> None:
     """Tests the mini-applications defined in tests/data/e2e."""
     log = logger.bind(mod=mod)
@@ -60,7 +61,7 @@ def test_end_to_end(
             )
             log.info("New test case.", test_case=test_case)
 
-            main: MainType = getattr(mod, "main")
+            main: ClackMain = getattr(mod, "main")
             with envvars_set(test_case.env):
                 ec = main([mod_name] + test_case.cli_args)
 

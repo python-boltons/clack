@@ -8,12 +8,10 @@ import sys
 from typing import (
     Any,
     Callable,
-    Dict,
     Final,
     Iterable,
     List,
     Optional,
-    Protocol,
     Sequence,
     Type,
     cast,
@@ -25,12 +23,9 @@ from logrus import Log, Logger, init_logging
 from typist import literal_to_list
 
 from . import _dynvars as dyn
-from ._config import AbstractConfig, Config_T
 from ._parser import filter_cli_args
+from .types import ClackConfig, ClackMain, ClackParser, ClackRunner
 
-
-Parser = Callable[[Sequence[str]], Dict[str, Any]]
-Runner = Callable[[Config_T], int]
 
 ASSERT_MAIN_FACTORY_PRECOND: Final = (
     "EXACTLY ONE of the following MUST be true when calling the"
@@ -48,32 +43,25 @@ ASSERT_MAIN_RUNNERS_PRECOND: Final = (
 )
 
 
-class MainType(Protocol):
-    """Type of the `main()` function returned by `main_factory()`."""
-
-    def __call__(self, argv: Sequence[str] = None) -> int:
-        """This method captures the `main()` function's signature."""
-
-
 @overload
-def main_factory(app_name: str, run: Runner) -> MainType:
+def main_factory(app_name: str, run: ClackRunner) -> ClackMain:
     ...
 
 
 @overload
 def main_factory(
-    app_name: str, *, runners: Iterable[Runner], parser: Parser
-) -> MainType:
+    app_name: str, *, runners: Iterable[ClackRunner], parser: ClackParser
+) -> ClackMain:
     ...
 
 
 def main_factory(
     app_name: str,
-    run: Runner = None,
+    run: ClackRunner = None,
     *,
-    runners: Iterable[Runner] = None,
-    parser: Parser = None,
-) -> MainType:
+    runners: Iterable[ClackRunner] = None,
+    parser: ClackParser = None,
+) -> ClackMain:
     """Factory used to create a new `main()` function.
 
     Returns:
@@ -121,7 +109,7 @@ def main_factory(
         run = _main_runner_factory(runners)
         return do_main_work(run, cfg)
 
-    def do_main_work(runner: Runner, cfg: AbstractConfig) -> int:
+    def do_main_work(runner: ClackRunner, cfg: ClackConfig) -> int:
         verbose: int = getattr(cfg, "verbose", 0)
         logs: List[Log] = getattr(cfg, "logs", [])
 
@@ -148,7 +136,7 @@ def main_factory(
         else:
             return status
 
-    def wrap_main(outer_main: Callable[[Sequence[str]], int]) -> MainType:
+    def wrap_main(outer_main: Callable[[Sequence[str]], int]) -> ClackMain:
         def inner_main(argv: Sequence[str] = None) -> int:
             if argv is None:  # pragma: no cover
                 argv = sys.argv
@@ -180,7 +168,7 @@ def _get_config_file_from_argv(argv: Sequence[str]) -> Optional[Path]:
     return None
 
 
-def _main_runner_factory(runners: Iterable[Runner]) -> Runner:
+def _main_runner_factory(runners: Iterable[ClackRunner]) -> ClackRunner:
     def run(cfg: Any) -> int:
         for run in runners:
             run_config_type = _get_run_cfg(run)
@@ -192,10 +180,10 @@ def _main_runner_factory(runners: Iterable[Runner]) -> Runner:
     return run
 
 
-def _get_run_cfg(run: Runner) -> Type[AbstractConfig]:
+def _get_run_cfg(run: ClackRunner) -> Type[ClackConfig]:
     run_hints = get_type_hints(run)
     try:
-        cfg: Type[AbstractConfig] = run_hints["cfg"]
+        cfg: Type[ClackConfig] = run_hints["cfg"]
         return cfg
     except KeyError as e:
         raise AssertionError(
@@ -204,9 +192,9 @@ def _get_run_cfg(run: Runner) -> Type[AbstractConfig]:
 
 
 def _config_type_from_command(
-    all_config_types: Iterable[Type[AbstractConfig]],
+    all_config_types: Iterable[Type[ClackConfig]],
     choosen_command: str,
-) -> Type[AbstractConfig]:
+) -> Type[ClackConfig]:
     config_type_to_command = {}
     for some_config_type in all_config_types:
         some_command = _get_single_command(some_config_type)
@@ -222,7 +210,7 @@ def _config_type_from_command(
     )
 
 
-def _get_all_commands(config_type: Type[AbstractConfig]) -> List[str]:
+def _get_all_commands(config_type: Type[ClackConfig]) -> List[str]:
     config_type_hints = get_type_hints(config_type)
     try:
         command_type = config_type_hints["command"]
@@ -236,7 +224,7 @@ def _get_all_commands(config_type: Type[AbstractConfig]) -> List[str]:
         return result
 
 
-def _get_single_command(config_type: Type[AbstractConfig]) -> str:
+def _get_single_command(config_type: Type[ClackConfig]) -> str:
     all_commands = _get_all_commands(config_type)
     assert len(all_commands) == 1, (
         ASSERT_MAIN_RUNNERS_PRECOND + f" | {all_commands!r}"
@@ -245,9 +233,9 @@ def _get_single_command(config_type: Type[AbstractConfig]) -> str:
 
 
 def _get_all_config_types(
-    runners: Iterable[Runner],
-) -> List[Type[AbstractConfig]]:
-    result: List[Type[AbstractConfig]] = []
+    runners: Iterable[ClackRunner],
+) -> List[Type[ClackConfig]]:
+    result: List[Type[ClackConfig]] = []
     for runner in runners:
         config_type = _get_run_cfg(runner)
         result.append(config_type)
