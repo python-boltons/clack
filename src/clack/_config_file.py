@@ -1,4 +1,4 @@
-"""Contains the ConfigFile protocol's implementations."""
+"""Contains the ClackConfigFile protocol's implementations."""
 
 from __future__ import annotations
 
