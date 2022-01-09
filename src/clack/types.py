@@ -24,7 +24,6 @@ ClackParser = Callable[[Sequence[str]], Dict[str, Any]]
 ClackRunner = Callable[["Config_T"], int]
 ConfigFile_T = TypeVar("ConfigFile_T", bound="ClackConfigFile")
 Config_T = TypeVar("Config_T", bound="ClackConfig")
-Config_T_co = TypeVar("Config_T_co", bound="ClackConfig", covariant=True)
 
 
 @runtime_checkable
