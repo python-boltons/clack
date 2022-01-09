@@ -1,4 +1,4 @@
-"""Shared types live here."""
+"""Custom types used by clack live here."""
 
 from __future__ import annotations
 
