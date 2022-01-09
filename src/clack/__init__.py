@@ -9,14 +9,13 @@ import logging as _logging
 from . import types, xdg
 from ._config import Config
 from ._config_file import YAMLConfigFile
-from ._helpers import NewCommand, comma_list_or_file, new_command_factory
+from ._helpers import comma_list_or_file, new_command_factory
 from ._main import main_factory
 from ._parser import Parser, filter_cli_args
 
 
 __all__ = [
     "Config",
-    "NewCommand",
     "Parser",
     "YAMLConfigFile",
     "comma_list_or_file",

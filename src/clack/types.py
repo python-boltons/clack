@@ -16,7 +16,7 @@ from typing import (
     runtime_checkable,
 )
 
-from eris import ErisError, Result
+from eris import ErisError, LazyResult, Result
 from pydantic.fields import ModelField
 from typist import PathLike
 
@@ -64,7 +64,7 @@ class ClackConfigFile(Protocol):
 
     def set(
         self, key: str, value: Any, *, allow_new: bool = False
-    ) -> Result[Any, ErisError]:
+    ) -> LazyResult[Any, ErisError]:
         """Setter for values in this config file."""
 
     def to_dict(self) -> Result[dict[str, Any], ErisError]:
@@ -78,7 +78,7 @@ class ClackMain(Protocol):
         """This method captures the `main()` function's signature."""
 
 
-class NewCommand(Protocol):
+class ClackNewCommand(Protocol):
     """Type of the function returned by `new_command_factory()`."""
 
     def __call__(

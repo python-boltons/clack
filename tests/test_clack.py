@@ -47,7 +47,7 @@ def test_config_file(make_config_file: MakeConfigFile) -> None:
 
     assert cf.get("foo").unwrap() == "FOO"
     assert cf.set("foo", "KUNG").unwrap() == "FOO"
-    assert isinstance(cf.set("fool", "FOOL"), Err)
+    assert isinstance(cf.set("fool", "FOOL").result(), Err)
 
     assert cf.set("fool", "FOOL", allow_new=True).unwrap() is None
     assert sorted(cf.to_dict().unwrap().items()) == [

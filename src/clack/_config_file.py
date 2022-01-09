@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict
 
-from eris import ErisError, Err, Ok, Result
+from eris import ErisError, Err, Ok, Result, return_lazy_result
 from typist import PathLike
 import yaml
 
@@ -64,6 +64,7 @@ class YAMLConfigFile:
 
         return cls(path)
 
+    @return_lazy_result
     def set(
         self, key: str, value: Any, *, allow_new: bool = False
     ) -> Result[Any, ErisError]:

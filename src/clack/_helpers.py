@@ -6,7 +6,7 @@ import argparse
 from typing import Any, List
 
 from ._parser import monkey_patch_parser
-from .types import NewCommand
+from .types import ClackNewCommand
 
 
 def new_command_factory(
@@ -16,7 +16,7 @@ def new_command_factory(
     required: bool = True,
     description: str = None,
     **kwargs: Any,
-) -> NewCommand:
+) -> ClackNewCommand:
     """Returns a `new_command()` function that can be used to add subcommands.
 
     Args:
