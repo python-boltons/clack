@@ -4,7 +4,7 @@
 #
 #    "make update-requirements"
 #
-bolton-eris==0.2.2
+bolton-eris==0.2.3
     # via -r requirements.in
 bolton-ion==0.1.0
     # via bolton-eris
@@ -14,7 +14,7 @@ bolton-metaman==0.1.1
     # via
     #   bolton-eris
     #   bolton-logrus
-bolton-typist==0.1.1
+bolton-typist==0.2.0
     # via
     #   -r requirements.in
     #   bolton-eris
