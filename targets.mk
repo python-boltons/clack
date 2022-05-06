@@ -13,6 +13,7 @@ PIP_COMPILE = $(PYTHON) -m piptools compile --allow-unsafe --no-emit-index-url -
 PIP_SYNC = $(PYTHON) -m piptools sync
 PYTHON = $(SOURCE_VENV) python
 PYTHON_VERSION := 3.8
+RENDER_ALL_COGS = $(SOURCE_VENV) ./bin/render_all_cogs
 SOURCE_VENV = source $(VENV_ACTIVATE);
 SPHINX_APIDOC = $(SOURCE_VENV) sphinx-apidoc
 SPHINX_BUILD = $(SOURCE_VENV) sphinx-build
@@ -40,7 +41,11 @@ endef
 
 .PHONY: all
 all:  ## Build the package, build the docs, run all tests, and run all linters.
-all: build build-docs lint test
+all: build build-docs cogs lint test
+
+.PHONY: cogs
+cogs: sync-dev-requirements
+	$(RENDER_ALL_COGS)
 
 .PHONY: lint
 lint: black isort pydocstyle flake8 mypy pylint quick-lints  ## Run all linting checks.
@@ -71,6 +76,8 @@ flake8: sync-dev-requirements  ## Run flake8 checks.
 
 .PHONY: mypy
 mypy: sync-dev-requirements  ## Run mypy checks.
+	@# HACK: Because mypy's cache has been terrible lately.
+	@rm -rf .mypy_cache
 	$(PYTHON) -m mypy src
 	@# HACK: Fixes weird numpy error that seemed to happen randomly.
 	bash -c "$(SOURCE_VENV) { python -m mypy tests || python -m mypy tests; }"
