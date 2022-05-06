@@ -9,9 +9,16 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.3.2...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.3.3...HEAD)
 
 No notable changes have been made.
+
+
+## [0.3.3](https://github.com/python-boltons/clack/compare/0.3.2...0.3.3) - 2022-05-06
+
+### Added
+
+* Add `clack.get_config()` function.
 
 
 ## [0.3.2](https://github.com/python-boltons/clack/compare/0.3.1...0.3.2) - 2022-01-14
