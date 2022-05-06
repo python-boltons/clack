@@ -124,7 +124,8 @@ def main_factory(
         logger.debug("DEBUG level logging enabled.")
 
         try:
-            status = runner(cfg)
+            with dyn.clack_envvars_set(app_name, [type(cfg)], cfg=cfg):
+                status = runner(cfg)
         except KeyboardInterrupt:  # pragma: no cover
             logger.info("Received SIGINT signal. Terminating script...")
             return 128 + signal.SIGINT.value

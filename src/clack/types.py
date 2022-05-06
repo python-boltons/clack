@@ -41,6 +41,9 @@ class ClackConfig(Protocol):
     def from_cli_args(cls: Type[Config_T], argv: Sequence[str]) -> Config_T:
         """Constructs a new Config object from command-line arguments."""
 
+    def dict(self) -> dict[str, Any]:
+        """Converts Config class into a dictionary."""
+
 
 @runtime_checkable
 class ClackConfigFile(Protocol):

@@ -9,6 +9,7 @@ import logging as _logging
 from . import types, xdg
 from ._config import Config
 from ._config_file import YAMLConfigFile
+from ._dynvars import get_config
 from ._helpers import (
     comma_list_or_file,
     filter_cli_args,
@@ -25,6 +26,7 @@ __all__ = [
     "YAMLConfigFile",
     "comma_list_or_file",
     "filter_cli_args",
+    "get_config",
     "main_factory",
     "new_command_factory",
     "register_runner_factory",

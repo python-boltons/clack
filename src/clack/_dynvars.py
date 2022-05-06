@@ -13,11 +13,11 @@ from pathlib import Path
 import pickle
 from typing import Any, Final, Iterable, Iterator, Optional, Type
 
-from .types import ClackConfig
+from .types import ClackConfig, Config_T
 
 
 _CODECS_ENCODING: Final = "base64"
-_NO_CONFIG_FILE: Final = "DEFAULT_CLACK_CONFIG_FILE_LIST"
+_NOT_SET: Final = "CLACK_ENVVAR_NOT_SET"
 
 
 @contextmanager
@@ -26,12 +26,14 @@ def clack_envvars_set(
     config_types: Iterable[Type[ClackConfig]],
     *,
     config_file: Path = None,
+    cfg: ClackConfig = None,
 ) -> Iterator[None]:
     """Context manager that sets temporary envvars.
 
     The following envvars are set on __enter__ and removed on __exit__:
         - CLACK_APP_NAME
         - CLACK_CONFIG_DEFAULTS
+        - CLACK_CONFIG_DICT
         - CLACK_CONFIG_FILE
     """
     config_defaults = {}
@@ -41,18 +43,24 @@ def clack_envvars_set(
         )
         config_defaults.update(some_config_defaults)
 
+    cfg_dict = cfg.dict() if cfg is not None else {}
+
     os.environ["CLACK_APP_NAME"] = app_name
     os.environ["CLACK_CONFIG_DEFAULTS"] = codecs.encode(
         pickle.dumps(config_defaults), _CODECS_ENCODING
     ).decode()
+    os.environ["CLACK_CONFIG_DICT"] = codecs.encode(
+        pickle.dumps(cfg_dict), _CODECS_ENCODING
+    ).decode()
     os.environ["CLACK_CONFIG_FILE"] = (
-        _NO_CONFIG_FILE if config_file is None else str(config_file)
+        _NOT_SET if config_file is None else str(config_file)
     )
 
     yield
 
     del os.environ["CLACK_APP_NAME"]
     del os.environ["CLACK_CONFIG_DEFAULTS"]
+    del os.environ["CLACK_CONFIG_DICT"]
     del os.environ["CLACK_CONFIG_FILE"]
 
 
@@ -100,10 +108,32 @@ def get_config_file() -> Optional[Path]:
     with _catch_key_error("get_config_file"):
         config_file = os.environ["CLACK_CONFIG_FILE"]
 
-    if config_file == _NO_CONFIG_FILE:
+    if config_file == _NOT_SET:
         return None
     else:
         return Path(config_file)
+
+
+def get_config(cfg_type: Type[Config_T]) -> Optional[Config_T]:
+    """Returns a clack configuration object of type `cfg_type`.
+
+    WARNING: This function should probably only be used when there is no way to
+    pass the config object directly to the calling function.
+
+    Raises:
+        A RuntimeError if the CLACK_CONFIG_DICT envvar is not defined.
+    """
+    with _catch_key_error("get_config"):
+        clack_config_dict = os.environ["CLACK_CONFIG_DICT"]
+
+    cfg_dict = pickle.loads(
+        codecs.decode(clack_config_dict.encode(), _CODECS_ENCODING)
+    )
+
+    if cfg_dict == _NOT_SET:
+        return None
+    else:
+        return cfg_type(**cfg_dict)
 
 
 @contextmanager
