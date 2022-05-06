@@ -105,7 +105,7 @@ def _config_settings_factory(
         def from_path_lists(
             cls,
             *path_like_lists: Union[List[Path], List[str]],
-            set_config_file: bool = True
+            set_config_file: bool = True,
         ) -> "MutexConfigGroup":
             """MutexConfigGroup class constructor.
 
