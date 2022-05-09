@@ -49,9 +49,11 @@ def clack_envvars_set(
     os.environ["CLACK_CONFIG_DEFAULTS"] = codecs.encode(
         pickle.dumps(config_defaults), _CODECS_ENCODING
     ).decode()
-    os.environ["CLACK_CONFIG_DICT"] = codecs.encode(
-        pickle.dumps(cfg_dict), _CODECS_ENCODING
-    ).decode()
+    os.environ["CLACK_CONFIG_DICT"] = (
+        codecs.encode(pickle.dumps(cfg_dict), _CODECS_ENCODING).decode()
+        if cfg_dict
+        else _NOT_SET
+    )
     os.environ["CLACK_CONFIG_FILE"] = (
         _NOT_SET if config_file is None else str(config_file)
     )
@@ -126,13 +128,12 @@ def get_config(cfg_type: Type[Config_T]) -> Optional[Config_T]:
     with _catch_key_error("get_config"):
         clack_config_dict = os.environ["CLACK_CONFIG_DICT"]
 
-    cfg_dict = pickle.loads(
-        codecs.decode(clack_config_dict.encode(), _CODECS_ENCODING)
-    )
-
-    if cfg_dict == _NOT_SET:
+    if clack_config_dict == _NOT_SET:
         return None
     else:
+        cfg_dict = pickle.loads(
+            codecs.decode(clack_config_dict.encode(), _CODECS_ENCODING)
+        )
         return cfg_type(**cfg_dict)
 
 
