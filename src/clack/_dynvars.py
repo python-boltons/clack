@@ -43,15 +43,13 @@ def clack_envvars_set(
         )
         config_defaults.update(some_config_defaults)
 
-    cfg_dict = cfg.dict() if cfg is not None else {}
-
     os.environ["CLACK_APP_NAME"] = app_name
     os.environ["CLACK_CONFIG_DEFAULTS"] = codecs.encode(
         pickle.dumps(config_defaults), _CODECS_ENCODING
     ).decode()
     os.environ["CLACK_CONFIG_DICT"] = (
-        codecs.encode(pickle.dumps(cfg_dict), _CODECS_ENCODING).decode()
-        if cfg_dict
+        codecs.encode(pickle.dumps(cfg.dict()), _CODECS_ENCODING).decode()
+        if cfg is not None
         else _NOT_SET
     )
     os.environ["CLACK_CONFIG_FILE"] = (
