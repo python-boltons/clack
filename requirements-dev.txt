@@ -10,7 +10,7 @@ alabaster==0.7.12
     # via sphinx
 arrow==1.2.2
     # via jinja2-time
-astroid==2.11.4
+astroid==2.11.5
     # via pylint
 attrs==21.4.0
     # via pytest
