@@ -5,7 +5,7 @@ pytest
 pytest-cov
 pytest-mock
 syrupy
-tox
+tox < 4
 tox-pyenv
 -e file:.#egg=bolton-clack>=0.dev
 
