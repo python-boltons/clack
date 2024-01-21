@@ -1,4 +1,4 @@
-"""A pytest plugin for testing the logrus package.
+"""A pytest plugin for testing the clack package.
 
 This plugin can be enabled via the `pytest_plugins` conftest.py variable. This
 allows us to use this plugin in external packages' tests instead of just for
