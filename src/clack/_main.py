@@ -44,11 +44,13 @@ ASSERT_MAIN_RUNNERS_PRECOND: Final = (
 
 
 @overload
-def main_factory(app_name: str, run: ClackRunner) -> ClackMain: ...
+def main_factory(  # noqa: E704
+    app_name: str, run: ClackRunner
+) -> ClackMain: ...
 
 
 @overload
-def main_factory(
+def main_factory(  # noqa: E704
     app_name: str, *, runners: Iterable[ClackRunner], parser: ClackParser
 ) -> ClackMain: ...
 
