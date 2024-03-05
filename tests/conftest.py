@@ -4,7 +4,7 @@ https://docs.pytest.org/en/6.2.x/fixture.html#conftest-py-sharing-fixtures-acros
 """
 
 import logging
-from typing import Iterator
+from typing import Iterator, cast
 
 from freezegun import freeze_time
 from pytest import fixture
@@ -28,9 +28,10 @@ def clear_loggers() -> None:
     See https://github.com/pytest-dev/pytest/issues/5502 for an explanation on
     why we need this fixture.
     """
-    loggers = [logging.getLogger()] + list(
-        logging.Logger.manager.loggerDict.values()  # type: ignore[arg-type]
+    manager_loggers = cast(
+        list[logging.Logger], list(logging.Logger.manager.loggerDict.values())
     )
+    loggers = [logging.getLogger()] + list(manager_loggers)
     for logger in loggers:
         handlers = getattr(logger, "handlers", [])
         for handler in handlers:
