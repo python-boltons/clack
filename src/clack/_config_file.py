@@ -53,7 +53,7 @@ class YAMLConfigFile:
     @classmethod
     def new(cls, path: PathLike, **kwargs: Any) -> YAMLConfigFile:
         """Construct a new YAMLConfigFile object."""
-        config_dict = dict(**kwargs)
+        config_dict = {**kwargs}
 
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)

@@ -220,9 +220,9 @@ def _get_all_commands(config_type: Type[ClackConfig]) -> List[str]:
             "Logic Error! When using sub-commands in your CLI interface with"
             " clack, ALL Config classes MUST have a 'command' attribute!"
         ) from e
-    else:
-        result = cast(List[str], literal_to_list(command_type))
-        return result
+
+    result = cast(List[str], literal_to_list(command_type))
+    return result
 
 
 def _get_single_command(config_type: Type[ClackConfig]) -> str:

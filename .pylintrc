@@ -36,7 +36,6 @@ enable=imports
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
 disable=design,
-    bad-continuation,
     blacklisted-name,
     broad-except,
     consider-using-enumerate,
@@ -44,7 +43,6 @@ disable=design,
     consider-using-in,
     consider-using-with,
     cyclic-import,
-    deprecated-lambda,
     global-statement,
     import-error,
     import-outside-toplevel,

@@ -54,7 +54,7 @@ def test_end_to_end(
         tmp_xdg_config.mkdir(parents=True, exist_ok=True)
 
         with dir_context(tmp_path), envvars_set(
-            dict(XDG_CONFIG_HOME=str(tmp_xdg_config))
+            {"XDG_CONFIG_HOME": str(tmp_xdg_config)}
         ):
             test_case = Case.from_comment_lines(
                 config_file_type, mod_name, comment_lines
