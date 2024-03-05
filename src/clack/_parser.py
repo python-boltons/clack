@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import sys
+from types import ModuleType
 from typing import (
     Any,
     Callable,
@@ -140,7 +141,7 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     return parser
 
 
-def _get_distribution_name(module):
+def _get_distribution_name(module: ModuleType | None) -> str | None:
     """
     Retrieves the PyPI distribution name associated with a given module.
 
@@ -150,6 +151,9 @@ def _get_distribution_name(module):
     Returns:
         The PyPI distribution name, or None if not found.
     """
+    if module is None:
+        return None
+
     try:
         # Attempt to get the distribution metadata directly using the module name
         distribution = importlib.metadata.distribution(module.__name__)
