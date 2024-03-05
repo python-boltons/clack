@@ -64,7 +64,7 @@ def register_runner_factory(
 
 
 def filter_cli_args(
-    args: argparse.Namespace | Mapping[str, Any]
+    args: argparse.Namespace | Mapping[str, Any],
 ) -> dict[str, Any]:
     """Filters args produced by 'parser' passed into clack.main_factory().
 
