@@ -155,7 +155,7 @@ def _get_distribution_name(module: ModuleType | None) -> str | None:
         return None
 
     try:
-        # Attempt to get the distribution metadata directly using the module name
+        # Attempt to get the dist metadata directly using the module name
         distribution = importlib.metadata.distribution(module.__name__)
         return distribution.metadata["Name"]
     except importlib.metadata.PackageNotFoundError:
