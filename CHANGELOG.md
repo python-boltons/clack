@@ -9,9 +9,17 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.3.5...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.3.6...HEAD)
 
 No notable changes have been made.
+
+
+## [0.3.6](https://github.com/python-boltons/clack/compare/0.3.5...0.3.6) - 2024-03-05
+
+### Fixed
+
+* Use package name instead of dist name in the message output by the
+  `--version` option.
 
 
 ## [0.3.5](https://github.com/python-boltons/clack/compare/0.3.4...0.3.5) - 2024-03-05
