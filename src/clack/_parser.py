@@ -106,7 +106,7 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
         assert caller_module is not None
         try:
             package_version = get_version(caller_dist_name)
-            version = f"{caller_dist_name} {package_version}"
+            version = f"{caller_module.__package__} {package_version}"
 
             package_location = _get_package_location(
                 caller_file, caller_dist_name
