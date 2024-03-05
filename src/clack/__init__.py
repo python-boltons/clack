@@ -36,6 +36,6 @@ __all__ = [
 
 __author__ = "Bryan M Bugyi"
 __email__ = "bryanbugyi34@gmail.com"
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 
 _logging.getLogger(__name__).addHandler(_logging.NullHandler())
