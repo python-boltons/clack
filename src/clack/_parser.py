@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 from importlib.metadata import PackageNotFoundError, version as get_version
 import inspect
 import os
@@ -98,16 +99,16 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     )
 
     caller_module = inspect.getmodule(frame)
-    caller_package = getattr(caller_module, "__package__", None)
+    caller_dist_name = _get_distribution_name(caller_module)
     caller_file = getattr(caller_module, "__file__", None)
-    if caller_package and caller_file:
+    if caller_dist_name and caller_file:
         assert caller_module is not None
         try:
-            package_version = get_version(caller_package)
-            version = f"{caller_package} {package_version}"
+            package_version = get_version(caller_dist_name)
+            version = f"{caller_dist_name} {package_version}"
 
             package_location = _get_package_location(
-                caller_file, caller_package
+                caller_file, caller_dist_name
             )
             version += f"\n    from {package_location}"
 
@@ -137,6 +138,34 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
             pass
 
     return parser
+
+
+def _get_distribution_name(module):
+    """
+    Retrieves the PyPI distribution name associated with a given module.
+
+    Args:
+        module: The module object for which to find the distribution.
+
+    Returns:
+        The PyPI distribution name, or None if not found.
+    """
+    try:
+        # Attempt to get the distribution metadata directly using the module name
+        distribution = importlib.metadata.distribution(module.__name__)
+        return distribution.metadata["Name"]
+    except importlib.metadata.PackageNotFoundError:
+        # Fallback logic: For packages where the module name might not
+        # directly match the distribution name, try finding distributions
+        # that contain this module
+        for dist in importlib.metadata.distributions():
+            module_names = dist.read_text("top_level.txt")
+            if (
+                module_names is not None
+                and module.__package__ in module_names.splitlines()
+            ):
+                return dist.metadata["Name"]
+        return None  # Distribution not found
 
 
 def monkey_patch_parser(parser: argparse.ArgumentParser) -> None:
