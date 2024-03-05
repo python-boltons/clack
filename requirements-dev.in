@@ -1,7 +1,7 @@
 ### Tests
 bolton-logrus ~= 0.1.0
 freezegun ~= 1.1
-pytest
+pytest < 8  # see https://github.com/smarie/python-pytest-cases/issues/330
 pytest-cov
 pytest-mock
 syrupy
