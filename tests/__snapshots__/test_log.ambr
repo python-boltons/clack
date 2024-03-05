@@ -1,3 +1,4 @@
+# serializer version: 1
 # name: test_log[do stuff-logging]
   '''
   ----- STDOUT -----
@@ -5,10 +6,10 @@
   
   
   ----- STDERR -----
-  15:45:03.585 [info     ] Are we going to do stuff?      [test] 
-  15:45:03.585 [warning  ] What stuff?!?!?!               [test] 
-  15:45:03.585 [info     ] Doing some stuff...            [test] 
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [info     ] Are we going to do stuff?      [test]
+  15:45:03.585 [warning  ] What stuff?!?!?!               [test]
+  15:45:03.585 [info     ] Doing some stuff...            [test]
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   '''
 # ---
@@ -19,10 +20,10 @@
   
   
   ----- STDERR -----
-  15:45:03.585 [info     ] Are we going to do stuff?      [test] 
-  15:45:03.585 [warning  ] What stuff?!?!?!               [test] 
+  15:45:03.585 [info     ] Are we going to do stuff?      [test]
+  15:45:03.585 [warning  ] What stuff?!?!?!               [test]
   15:45:03.585 [info     ] Doing some stuff...            [test] stuff=???
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   '''
 # ---
@@ -30,7 +31,7 @@
   '''
   ----- STDOUT -----
   Starting CLI test...
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   
   ----- STDERR -----
@@ -41,7 +42,7 @@
   '''
   ----- STDOUT -----
   Starting CLI test...
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   
   ----- STDERR -----
@@ -52,17 +53,17 @@
   '''
   ----- STDOUT -----
   Starting CLI test...
-  15:45:03.585 [info     ] Are we going to do stuff?      [test] 
-  15:45:03.585 [warning  ] What stuff?!?!?!               [test] 
-  15:45:03.585 [info     ] Doing some stuff...            [test] 
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [info     ] Are we going to do stuff?      [test]
+  15:45:03.585 [warning  ] What stuff?!?!?!               [test]
+  15:45:03.585 [info     ] Doing some stuff...            [test]
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   
   ----- STDERR -----
-  15:45:03.585 [info     ] Are we going to do stuff?      [test] 
-  15:45:03.585 [warning  ] What stuff?!?!?!               [test] 
-  15:45:03.585 [info     ] Doing some stuff...            [test] 
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [info     ] Are we going to do stuff?      [test]
+  15:45:03.585 [warning  ] What stuff?!?!?!               [test]
+  15:45:03.585 [info     ] Doing some stuff...            [test]
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   '''
 # ---
@@ -70,17 +71,17 @@
   '''
   ----- STDOUT -----
   Starting CLI test...
-  15:45:03.585 [info     ] Are we going to do stuff?      [test] 
-  15:45:03.585 [warning  ] What stuff?!?!?!               [test] 
+  15:45:03.585 [info     ] Are we going to do stuff?      [test]
+  15:45:03.585 [warning  ] What stuff?!?!?!               [test]
   15:45:03.585 [info     ] Doing some stuff...            [test] stuff=???
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   
   ----- STDERR -----
-  15:45:03.585 [info     ] Are we going to do stuff?      [test] 
-  15:45:03.585 [warning  ] What stuff?!?!?!               [test] 
+  15:45:03.585 [info     ] Are we going to do stuff?      [test]
+  15:45:03.585 [warning  ] What stuff?!?!?!               [test]
   15:45:03.585 [info     ] Doing some stuff...            [test] stuff=???
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   '''
 # ---
@@ -88,9 +89,9 @@
   '''
   ----- STDOUT -----
   Starting CLI test...
-  15:45:03.585 [info     ] Are we going to do stuff?      [test] 
-  15:45:03.585 [warning  ] What stuff?!?!?!               [test] 
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [info     ] Are we going to do stuff?      [test]
+  15:45:03.585 [warning  ] What stuff?!?!?!               [test]
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   
   ----- STDERR -----
@@ -101,9 +102,9 @@
   '''
   ----- STDOUT -----
   Starting CLI test...
-  15:45:03.585 [info     ] Are we going to do stuff?      [test] 
-  15:45:03.585 [warning  ] What stuff?!?!?!               [test] 
-  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test] 
+  15:45:03.585 [info     ] Are we going to do stuff?      [test]
+  15:45:03.585 [warning  ] What stuff?!?!?!               [test]
+  15:45:03.585 [error    ] Did we do the stuff?!?!?!      [test]
   
   
   ----- STDERR -----
@@ -117,9 +118,9 @@
   
   
   ----- STDERR -----
-  [2m15:45:03.585[0m [[32m[1minfo     [0m] [1mAre we going to do stuff?     [0m [[34m[1mtest[0m] 
-  [2m15:45:03.585[0m [[33m[1mwarning  [0m] [1mWhat stuff?!?!?!              [0m [[34m[1mtest[0m] 
-  [2m15:45:03.585[0m [[31m[1merror    [0m] [1mDid we do the stuff?!?!?!     [0m [[34m[1mtest[0m] 
+  [2m15:45:03.585[0m [[32m[1minfo     [0m] [1mAre we going to do stuff?     [0m [[0m[1m[34mtest[0m][0m
+  [2m15:45:03.585[0m [[33m[1mwarning  [0m] [1mWhat stuff?!?!?!              [0m [[0m[1m[34mtest[0m][0m
+  [2m15:45:03.585[0m [[31m[1merror    [0m] [1mDid we do the stuff?!?!?!     [0m [[0m[1m[34mtest[0m][0m
   
   '''
 # ---
@@ -130,9 +131,9 @@
   
   
   ----- STDERR -----
-  [2m15:45:03.585[0m [[32m[1minfo     [0m] [1mAre we going to do stuff?     [0m [[34m[1mtest[0m] 
-  [2m15:45:03.585[0m [[33m[1mwarning  [0m] [1mWhat stuff?!?!?!              [0m [[34m[1mtest[0m] 
-  [2m15:45:03.585[0m [[31m[1merror    [0m] [1mDid we do the stuff?!?!?!     [0m [[34m[1mtest[0m] 
+  [2m15:45:03.585[0m [[32m[1minfo     [0m] [1mAre we going to do stuff?     [0m [[0m[1m[34mtest[0m][0m
+  [2m15:45:03.585[0m [[33m[1mwarning  [0m] [1mWhat stuff?!?!?!              [0m [[0m[1m[34mtest[0m][0m
+  [2m15:45:03.585[0m [[31m[1merror    [0m] [1mDid we do the stuff?!?!?!     [0m [[0m[1m[34mtest[0m][0m
   
   '''
 # ---
