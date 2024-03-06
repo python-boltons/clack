@@ -144,7 +144,7 @@ def main_factory(
 
             # We first initialize logging here with no config, so we can log
             # messages in the clack parser.
-            init_logging()
+            init_logging(logs=[Log("stderr", "nocolor")])
             return outer_main(argv)
 
         return inner_main
