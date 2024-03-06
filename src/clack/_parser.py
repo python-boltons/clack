@@ -3,8 +3,12 @@
 from __future__ import annotations
 
 import argparse
-import importlib.metadata
-from importlib.metadata import PackageNotFoundError, version as get_version
+from importlib.metadata import (
+    PackageNotFoundError,
+    distribution as get_dist_from_name,
+    distributions as get_all_dists,
+    version as get_version,
+)
 import inspect
 import os
 from pathlib import Path
@@ -22,7 +26,7 @@ from typing import (
     cast,
 )
 
-from logrus import Log, LogFormat, LogLevel, get_default_logfile
+from logrus import Log, LogFormat, Logger, LogLevel, get_default_logfile
 from typist import literal_to_list
 
 from . import _dynvars as dyn
@@ -30,6 +34,8 @@ from ._config_file import YAMLConfigFile
 
 
 ARGPARSE_ARGUMENT_DEFAULT = object()
+
+logger = Logger(__name__)
 
 
 def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
@@ -99,14 +105,13 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
         ),
     )
 
-    caller_module = inspect.getmodule(frame)
-    caller_dist_name = _get_distribution_name(caller_module)
-    caller_file = getattr(caller_module, "__file__", None)
+    caller_mod = inspect.getmodule(frame)
+    caller_dist_name = _get_dist_name_from_mod(caller_mod)
+    caller_file = getattr(caller_mod, "__file__", None)
     if caller_dist_name and caller_file:
-        assert caller_module is not None
         try:
             package_version = get_version(caller_dist_name)
-            version = f"{caller_module.__package__} {package_version}"
+            version = f"{caller_dist_name} {package_version}"
 
             package_location = _get_package_location(
                 caller_file, caller_dist_name
@@ -122,14 +127,11 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
             pyversion = ".".join(str(x) for x in sys.version_info[:3])
             version += f"\n    using Python {pyversion}"
 
-            try:
-                clack_version = get_version(__package__)
-            except PackageNotFoundError:
-                from . import __version__
+            clack_dist_name = _get_dist_name_from_pkg_name(__package__)
+            assert clack_dist_name is not None
+            clack_version = get_version(clack_dist_name)
 
-                clack_version = __version__
-
-            version += f"\n{__package__} {clack_version}"
+            version += f"\n{clack_dist_name} {clack_version}"
 
             clack_location = _get_package_location(__file__, __package__)
             version += f"\n    from {clack_location}"
@@ -141,35 +143,53 @@ def Parser(*args: Any, **kwargs: Any) -> argparse.ArgumentParser:
     return parser
 
 
-def _get_distribution_name(module: ModuleType | None) -> str | None:
+def _get_dist_name_from_mod(from_mod: ModuleType | None) -> str | None:
     """
     Retrieves the PyPI distribution name associated with a given module.
 
     Args:
-        module: The module object for which to find the distribution.
+        from_mod: The module object for which to find the distribution.
 
     Returns:
         The PyPI distribution name, or None if not found.
     """
-    if module is None:
+    if from_mod is None:
+        logger.warn(
+            "Aborting distribution name search since from module is None."
+        )
         return None
 
+    dist_name = _get_dist_name_from_mod_and_pkg_name(
+        from_mod.__name__, from_mod.__package__
+    )
+    return dist_name
+
+
+def _get_dist_name_from_mod_and_pkg_name(
+    mod_name: str, pkg_name: str | None
+) -> str | None:
     try:
         # Attempt to get the dist metadata directly using the module name
-        distribution = importlib.metadata.distribution(module.__name__)
+        distribution = get_dist_from_name(mod_name)
         return distribution.metadata["Name"]
-    except importlib.metadata.PackageNotFoundError:
-        # Fallback logic: For packages where the module name might not
-        # directly match the distribution name, try finding distributions
-        # that contain this module
-        for dist in importlib.metadata.distributions():
-            module_names = dist.read_text("top_level.txt")
-            if (
-                module_names is not None
-                and module.__package__ in module_names.splitlines()
-            ):
-                return dist.metadata["Name"]
-        return None  # Distribution not found
+    except PackageNotFoundError:
+        return _get_dist_name_from_pkg_name(pkg_name)
+
+
+def _get_dist_name_from_pkg_name(pkg_name: str | None) -> str | None:
+    # Fallback logic: For packages where the module name might not
+    # directly match the distribution name, try finding distributions
+    # that contain this module
+    for dist in get_all_dists():
+        module_names = dist.read_text("top_level.txt")
+        if module_names is not None and pkg_name in module_names.splitlines():
+            return dist.metadata["Name"]
+
+    logger.warn(
+        "Unable to match package name to any known distribution.",
+        pkg_name=pkg_name,
+    )
+    return None
 
 
 def monkey_patch_parser(parser: argparse.ArgumentParser) -> None:

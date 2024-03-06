@@ -142,6 +142,9 @@ def main_factory(
             if argv is None:  # pragma: no cover
                 argv = sys.argv
 
+            # We first initialize logging here with no config, so we can log
+            # messages in the clack parser.
+            init_logging()
             return outer_main(argv)
 
         return inner_main
