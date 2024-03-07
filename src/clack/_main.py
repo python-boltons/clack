@@ -144,7 +144,13 @@ def main_factory(
 
             # We first initialize logging here with no config, so we can log
             # messages in the clack parser.
-            init_logging(logs=[Log("stderr", "nocolor")])
+            verbose = 0
+            for opt_or_arg in argv:
+                if opt_or_arg.startswith("-v"):
+                    verbose = opt_or_arg.count("v")
+                    break
+
+            init_logging(verbose=verbose)
             return outer_main(argv)
 
         return inner_main

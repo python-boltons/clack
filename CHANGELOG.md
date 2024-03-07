@@ -9,9 +9,20 @@ The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning]: https://semver.org/
 
 
-## [Unreleased](https://github.com/python-boltons/clack/compare/0.3.7...HEAD)
+## [Unreleased](https://github.com/python-boltons/clack/compare/0.3.8...HEAD)
 
 No notable changes have been made.
+
+
+## [0.3.8](https://github.com/python-boltons/clack/compare/0.3.7...0.3.8) - 2024-03-07
+
+### Added
+
+* Added support for reading `-v` option when initializing logrus the first time.
+
+### Changed
+
+* Default to using colored log messages when initializing logrus the first time.
 
 
 ## [0.3.7](https://github.com/python-boltons/clack/compare/0.3.6...0.3.7) - 2024-03-06
