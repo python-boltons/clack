@@ -28,7 +28,7 @@ SUPPORTED_PYTHON_VERSIONS = [
     (3, 11),
     (3, 12),
 ]
-USE_SCM_VERSION = {"fallback_version": "0.3.8"}
+USE_SCM_VERSION = {"fallback_version": "0.3.9"}
 
 
 ###############################################################################
