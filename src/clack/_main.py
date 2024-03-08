@@ -213,10 +213,10 @@ def _config_type_from_command(
             return some_config_type
 
     raise AssertionError(
-        "Logic Error! None of the given Config types seem to match the choosen"
-        " sub-command.  |  "
-        + ASSERT_MAIN_RUNNERS_PRECOND
-        + f"  |  {config_type_to_command!r}"
+        "Logic Error! None of the given Config types seem to match the"
+        f" choosen sub-command. | {ASSERT_MAIN_RUNNERS_PRECOND} |"
+        f" choosen_command={choosen_command}"
+        f" config_type_to_command={config_type_to_command!r}"
     )
 
 
