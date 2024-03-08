@@ -75,13 +75,11 @@ def test_end_to_end(
 
 @params(
     "name,lines,expected",
-    [
-        (
-            "1",
-            ["# ARGS: --foo=FOO --bar 2", "# OUTPUT: foobar"],
-            Case("1", ["--foo=FOO", "--bar", "2"], "foobar", None),
-        )
-    ],
+    [(
+        "1",
+        ["# ARGS: --foo=FOO --bar 2", "# OUTPUT: foobar"],
+        Case("1", ["--foo=FOO", "--bar", "2"], "foobar", None),
+    )],
 )
 def test_from_comment_lines(
     name: str, lines: List[str], expected: Case
